@@ -15,31 +15,31 @@ keywords:
 
 # ECDSA
 
-ECDSA, or Elliptic Curve Digital Signature Algorithm, is a cryptographic algorithm used to sign and verify messages. It is used in many blockchains, including Ethereum, to sign transactions.
-ECDSA works with different elliptic curves. Bitcoin and Ethereum both use the [secp256k1](/glossary#secp256k1) curve.
+ECDSA, or Elliptic Curve Digital Signature Algorithm, is a cryptographic algorithm used to sign and verify messages. It is used in many blockchains, including Ethereum, to sign transactions. ECDSA (Elliptic Curve Digital Signature Algorithm，椭圆曲线数字签名算法)是一种用于签名和验证消息的密码学算法。它被用于许多区块链，包括以太坊，以签署交易。
+ECDSA works with different elliptic curves. Bitcoin and Ethereum both use the [secp256k1](/glossary#secp256k1) curve. ECDSA适用于不同的椭圆曲线。比特币和以太坊都使用[secp256k1](/glossary#secp256k1)曲线。
 
 ## Why ECDSA?
 
 To interact with other blockchains and verify data from the outside world, o1js needs to be able to verify signatures.
 ECDSA is a widely used algorithm that is supported by many libraries and tools. For example, Ethereum transactions are signed using ECDSA over the secp256k1 curve.
-As a zkApp developer, when you want to verify an Ethereum transaction and make a statement about it, you must be able to verify the signature of the transaction which is why ECDSA is important for zkApps.
+As a zkApp developer, when you want to verify an Ethereum transaction and make a statement about it, you must be able to verify the signature of the transaction which is why ECDSA is important for zkApps. 为了与其他区块链交互并验证来自外部世界的数据，o1js需要能够验证签名。 ECDSA是一种被广泛使用的算法，很多库和工具都支持它。例如，以太坊交易是在secp256k1曲线上使用ECDSA进行签名的。作为一名zkApp开发者，当你想要验证以太坊交易并对其做出声明时，你必须能够验证交易的签名，这就是ECDSA对zkApp很重要的原因。
 
 ## Basic usage
 
-The ECDSA gadget is used to verify ECDSA signatures. The gadget takes as input the message, the signature, and the public key of the signer. It outputs a `Bool` indicating whether the signature is valid.
+The ECDSA gadget is used to verify ECDSA signatures. The gadget takes as input the message, the signature, and the public key of the signer. It outputs a `Bool` indicating whether the signature is valid. ECDSA小工具用于验证ECDSA签名。该小工具将消息、签名和签名者的公钥作为输入。它输出一个`Bool`值，表示签名是否有效。
 
-Before you can verify a signature, you must initiate the gadget with a curve configuration.
+Before you can verify a signature, you must initiate the gadget with a curve configuration. 在验证签名之前，必须使用曲线配置初始化该小工具。
 
-To initiate the curve:
+To initiate the curve: 初始化曲线:
 
 ```ts
 // create a secp256k1 curve
 class Secp256k1 extends createForeignCurve(Crypto.CurveParams.Secp256k1) {}
 ```
 
-By default, o1js exports a set of predefined curves. You can use the `createForeignCurve` function to create a curve from a `CurveParams` object. The `CurveParams` object contains the parameters of the curve, such as the modulus, the generator, and the parameters `a` and `b` of the curve equation `y^2 = x^3 + ax + b`.
+By default, o1js exports a set of predefined curves. You can use the `createForeignCurve` function to create a curve from a `CurveParams` object. The `CurveParams` object contains the parameters of the curve, such as the modulus, the generator, and the parameters `a` and `b` of the curve equation `y^2 = x^3 + ax + b`. 默认情况下，o1js会导出一组预定义的曲线。你可以使用`createForeignCurve`函数从`CurveParams`对象创建曲线。`CurveParams`对象包含曲线的参数，例如模、生成器以及曲线方程`y^2 = x^3 + ax + b`的参数`a`和`b`。
 
-The namespace `Crypto.CurveParams` exports predefined curves, such as `Pallas`, `Vesta`, and `Secp256k1`.
+The namespace `Crypto.CurveParams` exports predefined curves, such as `Pallas`, `Vesta`, and `Secp256k1`.命名空间`Crypto `。CurveParams`导出预定义的曲线，例如`Pallas`、`Vesta`和`Secp256k1`。
 
 ```ts
 // predefined curve parameters
@@ -50,8 +50,8 @@ CurveParams: {
 }
 ```
 
-This example uses `Secp256k1` as used in Ethereum.
-Now that you have a curve, you can create an instance of the ECDSA gadget:
+This example uses `Secp256k1` as used in Ethereum. 这个例子使用了以太坊中使用的`Secp256k1`。
+Now that you have a curve, you can create an instance of the ECDSA gadget: 有了曲线之后，就可以创建ECDSA gadget的实例了:
 
 ```ts
 // create an instance of ECDSA over secp256k1, previously specified
@@ -59,7 +59,7 @@ class Ecdsa extends createEcdsa(Secp256k1) {}
 ```
 
 Before you can verify a signature, you must create one by signing a message. Messages are of type `Bytes`, see [Bytes - API reference](keccak#bytes---api-reference).
-To sign a message, use the `sign` function of the `Ecdsa` class. Note that signing is not a provable operation, only verifying is.
+To sign a message, use the `sign` function of the `Ecdsa` class. Note that signing is not a provable operation, only verifying is. 在验证签名之前，必须通过对消息进行签名来创建签名。消息类型为`Bytes`，请参阅[Bytes - API参考](keccak# Bytes——API -reference)。要对消息进行签名，请使用`Ecdsa`类中的`sign`函数。请注意，签名不是可证明的操作，只有验证是。
 
 ```ts
 // a private key is a random scalar of secp256k1

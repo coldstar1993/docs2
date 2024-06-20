@@ -12,23 +12,23 @@ keywords:
 
 # Foreign Field Arithmetic
 
-A foreign field is a [finite field](https://en.wikipedia.org/wiki/Modular_arithmetic) different from the native field of the proof system. o1js exposes operations like modular addition and multiplication that work in any finite field of size less than `2^259`.
+A foreign field is a [finite field](https://en.wikipedia.org/wiki/Modular_arithmetic) different from the native field of the proof system. o1js exposes operations like modular addition and multiplication that work in any finite field of size less than `2^259`. foreign field是与证明系统的native field不同的[有限域](https://en.wikipedia.org/wiki/Modular_arithmetic)。O1js提供了模加法和模乘法等运算，可以在任何小于`2^259`的有限域上运行。
 
-Foreign fields are useful for implementing cryptographic algorithms in provable code. For example, you use them for verification of Ethereum-compatible ECDSA signatures.
+Foreign fields are useful for implementing cryptographic algorithms in provable code. For example, you use them for verification of Ethereum-compatible ECDSA signatures. Foreign fields对于在可证明代码中实现密码算法很有用。例如，你可以使用它们来验证与以太坊兼容的ECDSA签名。
 
 ## Why foreign fields?
 
-The core data type in o1js is `Field` that represents the field that is _native to the proof system_. In other words, addition and multiplication of Fields are the fundamental operations upon which all provable code is built. Because a lot of cryptography uses finite fields, o1js natively supports several cryptographic algorithms with high efficiency. See classes and modules like [Poseidon](../o1js-reference/variables/poseidon), [PublicKey](../o1js-reference/classes/PublicKey), [PrivateKey](../o1js-reference/classes/PrivateKey), [Signature](../o1js-reference/classes/Signature), and [Encryption](../o1js-reference/namespaces/Encryption).
+The core data type in o1js is `Field` that represents the field that is _native to the proof system_. In other words, addition and multiplication of Fields are the fundamental operations upon which all provable code is built. Because a lot of cryptography uses finite fields, o1js natively supports several cryptographic algorithms with high efficiency. See classes and modules like [Poseidon](../o1js-reference/variables/poseidon), [PublicKey](../o1js-reference/classes/PublicKey), [PrivateKey](../o1js-reference/classes/PrivateKey), [Signature](../o1js-reference/classes/Signature), and [Encryption](../o1js-reference/namespaces/Encryption).  o1js的核心数据类型是`Field`，它代表_证明系统原生_的字段。换句话说，字段的加法和乘法是构建所有可证明代码的基本操作。由于大量的密码算法使用有限域(Finite Field)，o1js原生支持多种高效的密码算法。参见这些类和模块，如[Poseidon](../o1js-reference/variables/ Poseidon)、[PublicKey](../o1js-reference/classes/PublicKey)、[PrivateKey](../o1js-reference/classes/PrivateKey)、[Signature](../o1js-reference/classes/Signature)和[Encryption](../o1js-reference/namespaces/Encryption)。
 
-However, these classes and modules are not compatible with the cryptography used in the wider world: `Signature.verify()` doesn't let you verify a signed JWT or email, and `Encryption.decrypt()` won't help you with your WhatsApp messages. That's because these methods use different finite fields than the native Field that was chosen primarily to enable efficient zk proofs.
+However, these classes and modules are not compatible with the cryptography used in the wider world: `Signature.verify()` doesn't let you verify a signed JWT or email, and `Encryption.decrypt()` won't help you with your WhatsApp messages. That's because these methods use different finite fields than the native Field that was chosen primarily to enable efficient zk proofs. 然而，这些类和模块与在更广泛的世界中使用的加密不兼容:`Signature.verify()`不能让你验证签名的JWT或电子邮件，`Encryption.decrypt()`不能帮助你验证WhatsApp消息。这是因为这些方法使用的有限域与原生域不同，原生域主要是为了实现高效的zk证明。
 
-Here is where foreign fields come in: They let you perform algorithms that connect your zkApp with the outside world of cryptography. Foreign fields come with an efficiency hit compared to the native Field, but the heavily engineered foreign fields are efficient enough to unlock many interesting use cases.
+Here is where foreign fields come in: They let you perform algorithms that connect your zkApp with the outside world of cryptography. Foreign fields come with an efficiency hit compared to the native Field, but the heavily engineered foreign fields are efficient enough to unlock many interesting use cases.  这就是foreign fields的作用:它们让你执行将你的zkApp与密码学的外部世界连接起来的算法。与native Field相比，Foreign fields的效率有所下降，但经过大量工程设计的Foreign fields足够高效，可以解锁许多有趣的用例。
 
 ## Basic usage
 
-This section provides a brief overview of how to use foreign fields. For more details, refer to the [API reference](../o1js-reference/classes/ForeignField) or the doc comments on each method.
+This section provides a brief overview of how to use foreign fields. For more details, refer to the [API reference](../o1js-reference/classes/ForeignField) or the doc comments on each method. 介绍如何使用foreign fields。要了解更多细节，请参考[API参考](../o1js-reference/classes/ForeignField)或每个方法的文档注释。
 
-The entry point for using foreign fields is the `createForeignField()` function:
+The entry point for using foreign fields is the `createForeignField()` function: 使用foreign fields的入口是`createForeignField()`函数:
 
 ```ts
 import { createForeignField } from 'o1js';
@@ -36,7 +36,7 @@ import { createForeignField } from 'o1js';
 class Field17 extends createForeignField(17n) {}
 ```
 
-The only parameter that `createForeignField()` takes is the modulus or size of the field. This code example passes in `17n` so that `Field17` allows you to perform arithmetic modulo 17:
+The only parameter that `createForeignField()` takes is the modulus or size of the field. This code example passes in `17n` so that `Field17` allows you to perform arithmetic modulo 17: `createForeignField()`接受的唯一参数是field的模值或大小。下面的代码示例传入了`17n`，因此`Field17`允许你对17求模运算:
 
 ```ts
 let x = Field17.from(16);
@@ -44,9 +44,9 @@ x.assertEquals(-1); // 16 = -1 (mod 17)
 x.mul(x).assertEquals(1); // 16 * 16 = 15 * 17 + 1 = 1 (mod 17)
 ```
 
-As modulus, any number of up to 259 bits is supported. This means that `ForeignField` can be used for many elliptic curve algorithms (where bit sizes are often just below 256) but not for RSA with its typical bit size of 2048.
+As modulus, any number of up to 259 bits is supported. This means that `ForeignField` can be used for many elliptic curve algorithms (where bit sizes are often just below 256) but not for RSA with its typical bit size of 2048. 模可以支持不超过259位的任意位数。这意味着`ForeignField`可以用于许多椭圆曲线算法(比特长度通常小于256)，但不能用于RSA，其比特长度通常为2048。
 
-Notably, the modulus does not have to be a prime number. For example, you can create a `UInt256` class where the modulus is `2^256`:
+Notably, the modulus does not have to be a prime number. For example, you can create a `UInt256` class where the modulus is `2^256`: 值得注意的是，模数不一定是质数。例如，你可以创建一个`UInt256`类，模数是`2^256`:
 
 ```ts
 class UInt256 extends createForeignField(1n << 256n) {}
@@ -57,7 +57,7 @@ let b = UInt256.from((1n << 255n) + 7n);
 a.add(b).assertEquals(7);
 ```
 
-The base type that is common to classes created by `createForeignField()` is `ForeignField`:
+The base type that is common to classes created by `createForeignField()` is `ForeignField`: `createForeignField()`创建的类的通用基类型是`ForeignField`:
 
 ```ts
 import { ForeignField } from 'o1js';
@@ -68,7 +68,7 @@ let zero: ForeignField = Field17.from(0);
 let alsoZero: ForeignField = UInt256.from(0);
 ```
 
-`ForeignField` supports the basic arithmetic operations:
+`ForeignField` supports the basic arithmetic operations: `ForeignField`支持基本的算术运算:
 
 ```ts
 x.add(x); // addition
@@ -79,9 +79,9 @@ x.div(x); // division
 x.inv(); // inverse
 ```
 
-Note that these operations are performed modulo the field size. So, `Field17.from(1).div(2)` gives 9 because `2 * 9 = 18 = 1 (mod 17)`.
+Note that these operations are performed modulo the field size. So, `Field17.from(1).div(2)` gives 9 because `2 * 9 = 18 = 1 (mod 17)`. 请注意，这些操作是对字段大小取模执行的。因此，`Field17.from(1).div(2)`的结果是9，因为`2 * 9 = 18 = 1 (mod 17)`。
 
-`ForeignField` also comes with a few other provable methods:
+`ForeignField` also comes with a few other provable methods: `ForeignField`还提供了一些其他可证明的方法:
 
 ```ts
 x.assertEquals(y); // assert x == y
@@ -91,22 +91,24 @@ let bits = x.toBits(); // convert to a `Bool` array of size log2(modulus);
 Field17.fromBits(bits); // convert back
 ```
 
-And there are non-provable methods for converting to and from JS values:
+And there are non-provable methods for converting to and from JS values: 还有一些不可证明的方法用于JS值之间的转换:
 
 ```ts
 let y = SmallField.from(5n); // convert from bigint or number
 y.toBigInt() === 5n; // convert to bigint
 ```
 
-As usual, you can find more information about each method in the [API reference](../o1js-reference/classes/ForeignField).
+As usual, you can find more information about each method in the [API reference](../o1js-reference/classes/ForeignField).  和往常一样，你可以在[API reference](../o1js-reference/classes/ForeignField)中找到每个方法的更多信息。
 
-## Three kinds of foreign fields
 
-If the basic usage examples look straightforward, here is where it gets a bit complicated.
 
-For each `ForeignField` class created with `createForeignField()`, there are actually three different variants: _unreduced_, _almost reduced_, and _canonical_.
+## Three kinds of foreign fields 三种foreign fields
 
-You find the variants as static properties on the class; they are themselves classes:
+If the basic usage examples look straightforward, here is where it gets a bit complicated. 如果基本用法的例子看起来很简单，这里就有点复杂了。
+
+For each `ForeignField` class created with `createForeignField()`, there are actually three different variants: _unreduced_, _almost reduced_, and _canonical_.  对于每个用`createForeignField()`创建的`ForeignField`类，实际上都有三种不同的变体:_unreduced_, _almost reduced_, and _canonical_。
+
+You find the variants as static properties on the class; they are themselves classes: 变体是类的静态属性;它们本身就是类:
 
 ```ts
 let x = new Field17.Unreduced(0);
@@ -114,7 +116,7 @@ let y = new Field17.AlmostReduced(0);
 let z = new Field17.Canonical(0);
 ```
 
-Unreduced field elements just have the `ForeignField` type. For the other two variants, there are narrower base types that are common to each variant:
+Unreduced field elements just have the `ForeignField` type. For the other two variants, there are narrower base types that are common to each variant: Unreduced field元素只有`ForeignField`类型。对于其他两种变体，它们都有一些更窄的通用基类型:
 
 ```ts
 import { AlmostReducedField, CanonicalField } from 'o1js';
@@ -123,11 +125,11 @@ y satisfies AlmostReducedField;
 z satisfies CanonicalField;
 ```
 
-In the following section, you learn when to use the different variants, and how to convert between them. You don't need to remember all of it, though: The type system guides you to use the right variant in each situation.
+In the following section, you learn when to use the different variants, and how to convert between them. You don't need to remember all of it, though: The type system guides you to use the right variant in each situation. 在下一节中，你将学习何时使用不同的变体，以及如何在它们之间进行转换。不过，你不需要记住所有内容:类型系统会指导你在每种情况下使用正确的变体。
 
 ### Unreduced fields
 
-Most arithmetic operations return unreduced fields:
+Most arithmetic operations return unreduced fields: 大多数算术运算返回unreduced fields
 
 ```ts
 import assert from 'assert';
@@ -136,9 +138,9 @@ let z = x.add(x);
 assert(z instanceof Field17.Unreduced);
 ```
 
-In short, **unreduced** means that a value can be larger than the modulus.
+In short, **unreduced** means that a value can be larger than the modulus. 简而言之，**unreduced**意味着一个值可以比取模更大。
 
-For example, if `x` has the value 16, it is valid for `x.add(x)` to contain the value 32. The addition is correct modulo 17, but doesn't guarantee a result smaller than 17.
+For example, if `x` has the value 16, it is valid for `x.add(x)` to contain the value 32. The addition is correct modulo 17, but doesn't guarantee a result smaller than 17.例如，如果`x`的值为16，那么`x.add(x)`包含的值为32是有效的。这个加法运算对17求模是正确的，但不能保证结果小于17。
 
 :::note
 
@@ -147,7 +149,7 @@ A malicious prover _could_ make it larger by slightly modifying their local vers
 
 :::
 
-Unreduced fields can be added and subtracted, but not multiplied or divided:
+Unreduced fields can be added and subtracted, but not multiplied or divided:  Unreduced fields可以相加和相减，但不能相乘或相除:
 
 ```ts
 z.add(1).sub(x); // works
@@ -159,14 +161,14 @@ assert((z as any).div === undefined);
 
 ### Almost reduced fields
 
-To do multiplication, you need almost reduced fields. You can convert to them by using `.assertAlmostReduced()`:
+To do multiplication, you need almost reduced fields. You can convert to them by using `.assertAlmostReduced()`: 要做乘法，几乎需要reduced fields。你可以使用`.assertAlmostReduced()`来转换它们:
 
 ```ts
 let zAlmost = z.assertAlmostReduced();
 assert(zAlmost instanceof SmallField.AlmostReduced);
 ```
 
-Now you can do multiplication and division:
+Now you can do multiplication and division: 现在可以进行乘法和除法运算了:
 
 ```ts
 let zz = zAlmost.mul(zAlmost); // zAlmost.mul() is defined

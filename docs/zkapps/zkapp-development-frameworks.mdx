@@ -18,34 +18,38 @@ keywords:
 :::info
 
 To protect end users and ensure your zkApps are secure, consider the information at [Security and zkApps](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps) while architecting your solution and consider a third-party security audit before deploying to Mina mainnet.
+为了保护终端用户以及确保你的zkApps是安全的，当你构建方案时，请结合思考[Security and zkApps](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps)里的信息。并在部署到主网前请考虑第三方安全审计。
 
 :::
 
-# zkApp Development Frameworks
+# zkApp Development Frameworks zkApp开发框架
 
 Developers building zkApps in the Mina ecosystem can leverage two different frameworks, each tailored to optimize different types of solutions.
 Explore the options below to find the perfect fit for your project.
+在Mina生态中构建zkAPP的开发者们可以利用两个不同的框架，每个框架都可以优化不同类型的解决方案。探索下面的选项以找到适合你项目的框架。
 
 If you are unsure about any of the information presented here and need guidance on choosing the most suitable framework for you, drop by [Discord](https://discord.gg/minaprotocol) and let us help!
+如果你不确定这里提供的信息，且需要关于选择最适合你的框架的指导，请访问[Discord](https://discord.gg/minaprotocol)并让我们提供帮助!
 
 ## [o1js](/zkapps/o1js)
 
-o1js is the framework for building **zkApps on the Mina L1** and new infrastructure such as rollups.  
+o1js is the framework for building **zkApps on the Mina L1** and new infrastructure such as rollups.  o1js是用于一个构建**Mina Layer1上的zkApps** 和新基础设施(如rollup)的框架。
 o1js is TypeScript based for ease of use, comes with a host of built-in features, is extensible to suit various use cases, and takes full advantage of the unique aspects of the Mina protocol.
+o1js基于TypeScript，易于使用，具有许多内置功能，可扩展以适应各种用例，并充分利用了Mina协议的独特方面。
 
-o1js is also the **zkDSL** used for:
+o1js is also the **zkDSL** used for: o1js也可用于下面场景的**zkDSL**：
 
-- Writing general-purpose zk circuits.
-- Constructing new primitives and data structures.
+- Writing general-purpose zk circuits. 写通用zk电路
+- Constructing new primitives and data structures. 构建新原语和数据结构
 
-There are some key considerations when choosing to build a zkApp with o1js on Mina L1:
+There are some key considerations when choosing to build a zkApp with o1js on Mina L1: 当选择使用o1js在Mina Layer1上构建zkApp时，有一些关键的考虑因素：
 
-- zkApps are subject to protocol throughput limitations.
-- At present, zkApps that require support for multiple concurrent users require specific architecture to avoid race conditions:
-  - Where more than the eight on-chain field elements are required to manage state, and access to that state is not shared between users, the experimental [Offchain Storage API](/zkapps/writing-a-zkapp/feature-overview/offchain-storage) offers a solution.
-  - Where concurrent access to _shared global state_ is required, the required architecture is available **out of the box** when using the Protokit framework to build your zkApp as an zkApp-chain (L2). There is currently no easy-to-use equivalent for shared state in o1js L1 contracts.
+- zkApps are subject to protocol throughput limitations. zkApps受制于Mina协议吞吐量
+- At present, zkApps that require support for multiple concurrent users require specific architecture to avoid race conditions: 当前，需要支持多个并发用户的zkApps需要特定架构以避免竞态条件：
+  - Where more than the eight on-chain field elements are required to manage state, and access to that state is not shared between users, the experimental [Offchain Storage API](/zkapps/writing-a-zkapp/feature-overview/offchain-storage) offers a solution.当需要超过8个链上Field元素来管理链上状态，且对该状态的访问不在用户间共享，实验性的[Offchain Storage API](/zkapps/writing-a-zkapp/feature-overview/offchain-storage)会提供一个解决方案。
+  - Where concurrent access to _shared global state_ is required, the required architecture is available **out of the box** when using the Protokit framework to build your zkApp as an zkApp-chain (L2). There is currently no easy-to-use equivalent for shared state in o1js L1 contracts.当需要并发访问_共享全局状态_时，当使用Protokit框架将你的zkApp构建为zkApp-chain(L2)时, 所需的架构是**开箱即用**的。在o1js L1合约中，目前还没有易于使用的状态共享同等品。
 
-Start here:
+Start here:从这里开始：
 
 - [Developer documentation](/zkapps/o1js)
 - [o1js repository](https://github.com/o1-labs/o1js)
@@ -54,16 +58,18 @@ Start here:
 ## [Protokit](https://protokit.dev/)
 
 Protokit is a powerful framework designed to build **ZK appchains and smart contracts** that are user-facing, privacy-preserving, interoperable.  
+Protokit是一个强大框架，旨在构建面向用户的、隐私保护的、互操作性的**zk appchains and smart contracts**。
 It offers a familiar developer experience similar to Solidity dApps, making it easier and intuitive for developers to leverage ZK in their blockchain solutions.
+它提供了类似Solidity dApps的开发者体验，令开发者更轻松简便直观地在他们的区块链方案中利用ZK.
 
-It provides a full set of tools necessary for:
+It provides a full set of tools necessary for: 它提供了必要的一整套工具，用于：
 
-- zkApps that require high throughput or multiple concurrent users.
-- zkApps that require shared or global state access.
-- Developers familiar with execution environments such as EVM.
-- Developers who wish to leverage the modular architecture of Protokit.
+- zkApps that require high throughput or multiple concurrent users. 需要高吞吐量或者多个并发用户的zkApps。
+- zkApps that require shared or global state access. 需要共享的或全局的状态访问。
+- Developers familiar with execution environments such as EVM. 熟悉EVM之类执行环境的开发者。
+- Developers who wish to leverage the modular architecture of Protokit. 希望利用Protokit模块化架构的开发者。
 
-Start here:
+Start here: 从这里开发：
 
 - [Developer documentation](https://github.com/proto-kit)
 - [Protokit repository](https://github.com/proto-kit)

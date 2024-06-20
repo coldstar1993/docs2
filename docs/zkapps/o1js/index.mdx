@@ -21,17 +21,17 @@ keywords:
 :::info
 
 To protect end users and ensure your zkApps are secure, consider the information at [Security and zkApps](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps) while architecting your solution and consider a third-party security audit before deploying to Mina mainnet.
-
+为了保护最终用户并确保您的zkApps是安全的，在构建解决方案时，请考虑[Security and zkApps](/ zkApps /writing-a-zkapp/introduction-to-zkapps/secure- zkApps)上的信息，并在部署到Mina mainnet之前考虑第三方安全审计。
 :::
 
 # Introduction to o1js
 
-o1js is a TypeScript library for:
+o1js is a TypeScript library for: o1js是一个Typescript函数库，用于：
 
-- Writing general-purpose zero knowledge (zk) programs
-- Writing zk smart contracts for Mina
+- Writing general-purpose zero knowledge (zk) programs 写通用零知识程序
+- Writing zk smart contracts for Mina 在Mina链上写zk合约
 
-This is TypeScript code that you might write when using o1js:
+This is TypeScript code that you might write when using o1js: 下面是当使用o1js时, 你可能写的Typescript代码
 
 ```ts
 import { Field, Poseidon } from 'o1js';
@@ -47,21 +47,26 @@ const expectedHash =
 
 In a zkApp, this code can be used to prove that you know a secret value whose hash is publicly known without revealing the secret.
 The code is plain TypeScript and is executed as normal TypeScript. You might call o1js an _embedded domain-specific language (DSL)_.
+在这个zkApp里，这段代码可用于证明你知道一个哈希值公开已知的秘密值，可是你不会泄露此值。这段代码是一段普通的Typescript代码，并作为普通Typescript代码执行。你可能会称o1js为_嵌入式的DSL_
 
-o1js provides data types and methods that are _provable_: You can prove their execution.
+o1js provides data types and methods that are _provable_: You can prove their execution. o1js提供了_可证明的_数据类型和方法：你可以证明它们的执行。
 
 In the example code, `Poseidon.hash()` and `Field.assertEquals()` are examples of provable methods. Proofs are _zero knowledge_, because they can be verified without learning their inputs and execution trace. Selected parts of the proof can be made public, if it suits your application.
+在样例代码中，`Poseidon.hash()` and `Field.assertEquals()`是可证明方法的样例。证明是_零知识_的, 因为他们可以在不了解其输入值和执行轨迹的情况下被验证。证明的选定部分可以公开，如果它适合你的应用。
 
 o1js is a general-purpose zk framework that gives you the tools to create zk proofs. It lets you write arbitrary zk programs leveraging a rich set of built-in provable operations, like basic arithmetic, hashing, signatures, boolean operations, comparisons, and more. Use the o1js framework to write zkApps on Mina, smart contracts that execute client-side and have private inputs.
+o1js是一个提供工具给你去创建零知识证明的通用零知识框架。它允许您利用丰富的内置可证明操作集来编写任意zk程序，如基本算术、哈希、签名、布尔操作、比较等。使用o1js框架在Mina上编写zkApps，即客户端执行并具有隐私入参的智能合约。
 
 All of the o1js framework is packaged as a single TypeScript library that can be used in major web browsers and Node.js. The best way to get started with o1js is [using the zkApp CLI](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp). You can also install o1js from npm with `npm i o1js`.
+所有o1js框架都打包为一个TypeScript库，可以在主流web浏览器和Node.js中使用。开始使用o1js的最好方法是[使用zkApp CLI](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp)。你也可以使用`npm i o1js`从npm中安装o1js。
 
 Start your o1js journey by learning about [basic zk programming concepts](/zkapps/o1js/basic-concepts).
+通过学习[基本zk编程概念](/zkapps/o1js/basic-concepts)开始你的o1js之旅。
 
 ## Audits of o1js
 
-* **Third-party audit (Q1/Q2 2024)**. An audit by an external security firm is ongoing and on track to complete in Q2 2024. Results will be shared when available.
+* **Third-party audit (Q1/Q2 2024)**. An audit by an external security firm is ongoing and on track to complete in Q2 2024. Results will be shared when available.由一家外部安全公司进行的审计正在进行中，并有望在2024年第二季度完成。结果将在可用时共享。
 
-* [**Internal audit (Q1 2024)**](https://github.com/o1-labs/o1js/files/15192821/Internal.o1js.audit.Q1.2024.pdf). In March 2024, the o1js team spent roughly two person-weeks to conduct an internal audit of parts of the o1js code base. The audit focused on reviewing core provable code. A number of issues were found and fixed.
+* [**Internal audit (Q1 2024)**](https://github.com/o1-labs/o1js/files/15192821/Internal.o1js.audit.Q1.2024.pdf). In March 2024, the o1js team spent roughly two person-weeks to conduct an internal audit of parts of the o1js code base. The audit focused on reviewing core provable code. A number of issues were found and fixed. 2024年3月，o1js团队花了大约两个人周的时间对o1js代码库的部分进行了内部审计。审计的重点是审查核心的可证明代码。我们发现并修复了一些问题。
 
-Please see our page on [Security and zkApps](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps) for more information on ensuring your zkApp is secure.
+Please see our page on [Security and zkApps](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps) for more information on ensuring your zkApp is secure. 请参阅我们的页面[安全与zkApps](/ zkApps /writing-a-zkapp/introduction-to-zkapps/secure- zkApps)以了解更多关于确保您的zkApp是安全的信息。

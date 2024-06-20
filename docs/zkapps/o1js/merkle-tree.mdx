@@ -13,35 +13,32 @@ keywords:
 
 # Merkle Tree
 
-zkApp accounts can store only a limited amount of data on chain so that Mina's chain remains succinct and does not become bloated.
-But some zkApps might require you to access more than what you can store on-chain in a zkApp account.
+zkApp accounts can store only a limited amount of data on chain so that Mina's chain remains succinct and does not become bloated.zkApp账户只能在链上存储有限数量的数据，因此Mina的链保持简洁，不会变得臃肿。
+But some zkApps might require you to access more than what you can store on-chain in a zkApp account.但有些zkApp可能要求你访问比zkApp账户链上存储的内容更多的内容。
 
-## Referencing off-chain data
+## Referencing off-chain data  引用链下数据
 
-But how can you achieve that? The answer is a Merkle tree! Merkle trees (or similar structures such as Verkle trees) allow you to _reference_ off-chain data by storing only a single hash on-chain.
+But how can you achieve that? The answer is a Merkle tree! Merkle trees (or similar structures such as Verkle trees) allow you to _reference_ off-chain data by storing only a single hash on-chain. 但是如何才能实现呢?答案是默克尔树! Merkle树(或类似的结构，如Verkle树)允许你通过在链上仅存储一个哈希值来_引用_链下数据。
 
 ## How does that work?
 
-Merkle trees are special binary trees in which every leaf (the nodes at the very bottom of the tree!) are cryptographic hashes of the underlying pieces of data, and the internal nodes are labeled with the cryptographic hash of the concatenated labels (hashes) of its child nodes.
+Merkle trees are special binary trees in which every leaf (the nodes at the very bottom of the tree!) are cryptographic hashes of the underlying pieces of data, and the internal nodes are labeled with the cryptographic hash of the concatenated labels (hashes) of its child nodes.Merkle树是一种特殊的二叉树，其中每个叶子(树最底部的节点!)都是底层数据片段的加密散列，内部节点用其子节点的连接标签(散列)的加密散列标记。
 
-By following this algorithm to the very top, you end up with one single node (the root node) that stores the root hash of the tree. The root hash is a reference to all pieces of data that were included in the tree's leaves, so you can reference large amounts of data by using one small hash.
+By following this algorithm to the very top, you end up with one single node (the root node) that stores the root hash of the tree. The root hash is a reference to all pieces of data that were included in the tree's leaves, so you can reference large amounts of data by using one small hash. 按照这个算法从头到尾，你最终会得到一个存储树的根哈希值的节点(根节点)。根结点的散列值指向所有包含在叶子结点中的数据，因此你可以使用一个小散列值来引用大量数据。
 
-Another benefit of Merkle trees is the witness, also known as a Merkle proof or Merkle path. The witness is the path from one specific leaf node to the very top of the tree (the root). Merkle witnesses are proofs of inclusion that prove that one specific piece of data (for example, an account in the ledger or the scores on a leaderboard) exists within the entire tree.
+Another benefit of Merkle trees is the witness, also known as a Merkle proof or Merkle path. The witness is the path from one specific leaf node to the very top of the tree (the root). Merkle witnesses are proofs of inclusion that prove that one specific piece of data (for example, an account in the ledger or the scores on a leaderboard) exists within the entire tree. 默克尔树的另一个好处是见证(Witness)，也被称为Merkle proof或Merkle path。Witness是从一个特定的叶节点到树的最顶端(根)的路径。默克尔见证(Merkle witnesses)是对某一特定数据(例如，账本中的帐户或排行榜上的分数)存在于整个树中的包含证明。
 
 #### How are Merkle trees useful for zkApps?
 
-You can reference large amounts of off-chain data and prove inclusion of very specific parts of that data with only a small hash - the root - and a witness.
+You can reference large amounts of off-chain data and prove inclusion of very specific parts of that data with only a small hash - the root - and a witness. 您可以引用大量链下数据，并仅使用一个(哈希-根-见证)来证明包含该数据的特定部分。
 
-To use Merkle trees and reference off-chain data in your zkApps on Mina, store the root of the tree on-chain and voilà,
-you now have access to more data off-chain.
+To use Merkle trees and reference off-chain data in your zkApps on Mina, store the root of the tree on-chain and voilà, you now have access to more data off-chain. 要在 Mina 上的 zkApps 中使用 Merkle 树并引用链下数据，请将树的根存储在链上，然后，您现在可以访问更多链下数据。
 
-Imagine a zkApp that manages a game with a leaderboard. The zkApp has a method to update a player's score if the player guesses a number correctly.
-After a player reaches a threshold score, the player can invoke another method to get a reward. Because you want many players to participate in the game,
-you are drastically limited by how much data can be stored on-chain. You will quickly run out of on-chain space with eight or more participants.
+Imagine a zkApp that manages a game with a leaderboard. The zkApp has a method to update a player's score if the player guesses a number correctly. After a player reaches a threshold score, the player can invoke another method to get a reward. Because you want many players to participate in the game,you are drastically limited by how much data can be stored on-chain. You will quickly run out of on-chain space with eight or more participants. 想象一个使用排行榜管理游戏的 zkApp。如果玩家猜对了一个数字，zkApp 有一种方法来更新玩家的分数。当玩家达到阈值分数后，玩家可以调用另一种方法来获得奖励。因为您希望许多玩家参与游戏，所以链上可以存储的数据量会受到极大限制。如果有八个或更多参与者，您的链上空间很快就会用完。
 
-A possible solution to that problem is to use the power of Merkle trees, store the public keys of each player and their corresponding scores off-chain, and reference the keys in the smart contract.
+A possible solution to that problem is to use the power of Merkle trees, store the public keys of each player and their corresponding scores off-chain, and reference the keys in the smart contract. 解决该问题的一个可能方法是利用 Merkle 树的功能，将每个玩家的公钥及其相应的分数存储在链下，并在智能合约中引用密钥。
 
-Look at the data structure first. For example, to map a player's id to score points:
+Look at the data structure first. For example, to map a player's id to score points: 首先看一下数据结构。例如，将玩家的 ID 映射到得分：
 
 ```sh
 0: 5 points
@@ -54,33 +51,33 @@ Look at the data structure first. For example, to map a player's id to score poi
 
 #### Implementing the smart contract
 
-Now it's time to look at what a leaderboard zkApp might look like. To have on-chain state that points to the off-chain Merkle tree, call this variable the `root`.
+Now it's time to look at what a leaderboard zkApp might look like. To have on-chain state that points to the off-chain Merkle tree, call this variable the `root`.现在是时候看看排行榜zkApp可能是什么样子了。要使链上状态指向链下的Merkle树，请将此变量称为`root`。
 
 :::info
 
-Sometimes the variable `root` is called commitment, because it commits to something.
+Sometimes the variable `root` is called commitment, because it commits to something. 有时候变量`root`被称为承诺，因为它承诺了某些东西。
 
 :::
 
-Additionally, you want to store a variable `z` that is the hash of the value a player has to guess: `H(guess) = z`
+Additionally, you want to store a variable `z` that is the hash of the value a player has to guess: `H(guess) = z`. 此外，你想存储一个变量`z`，它是玩家必须猜测的值的哈希值:`H(guess) = z`
 
 :::info
 
-Guessing a simple hash like this example can easily be brute forced, especially if the preimage is simple (like a 5-letter word or a small number with only a few digits).
+Guessing a simple hash like this example can easily be brute forced, especially if the preimage is simple (like a 5-letter word or a small number with only a few digits).像这个案例般地猜测一个简单的哈希值很容易被暴力破解，特别是在原像很简单的情况下(比如一个5个字母的单词或只有几个数字的小数字)。
 
-Ensure that your zkApps are always secure, especially when dealing with funds.
+Ensure that your zkApps are always secure, especially when dealing with funds. 请确保你的zkApps始终是安全的，特别是在处理资金的时候。
 
 :::
 
-The first method allows a player to make a guess; if the guess is correct, the player gains one point.
-The method takes the player's guess and hashes it, then checks if the hash `H(guess)` equals the on-chain state `z`, and if that's the case, then the player gains one point on the scoreboard.
+The first method allows a player to make a guess; if the guess is correct, the player gains one point.第一个method让玩家进行猜测;如果猜对了，玩家得1分。
+The method takes the player's guess and hashes it, then checks if the hash `H(guess)` equals the on-chain state `z`, and if that's the case, then the player gains one point on the scoreboard.该方法获取玩家的猜测并对其进行哈希，然后检查哈希值`H(guess)`是否等于链上状态`z`，如果是这样，则玩家在记分板上获得1分。
 
-A second method is required to take care of the reward. It checks if the player's score is over a threshold and pays out a reward if that's the case.
-This method must also verify the Merkle witness and check if it matches the on-chain stored Merkle root.
+A second method is required to take care of the reward. It checks if the player's score is over a threshold and pays out a reward if that's the case. 第二种方法需要关注奖励。它会检查玩家的分数是否超过阈值，如果超过则给予奖励。
+This method must also verify the Merkle witness and check if it matches the on-chain stored Merkle root.该方法还必须验证默克尔见证(Merkle witness)，并检查它是否与链上存储的Merkle root相匹配。
 
 :::note
 
-The `examples` folder in the o1js repository includes a working [Merkle tree](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree) example with all of the required boilerplate code.
+The `examples` folder in the o1js repository includes a working [Merkle tree](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree) example with all of the required boilerplate code. o1js仓库中的`examples`文件夹包含一个可用的[Merkle tree](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree)示例，其中包含所有必需的样板代码。
 
 :::
 
@@ -147,16 +144,16 @@ class Leaderboard extends SmartContract {
 }
 ```
 
-Merkle trees allow you to reference off-chain data easily by only adding a couple of lines of code.
-However, it is your responsibility as the developer of the zkApp to make sure that the Merkle tree that is referenced on-chain is always in sync with the actual off-chain data structure.
+Merkle trees allow you to reference off-chain data easily by only adding a couple of lines of code. Merkle树允许您仅通过添加几行代码即可轻松引用链下数据。
+However, it is your responsibility as the developer of the zkApp to make sure that the Merkle tree that is referenced on-chain is always in sync with the actual off-chain data structure. 然而，作为zkApp的开发人员，确保链上引用的Merkle树始终与实际的链下数据结构同步是您的责任。
 
-You can look at the [Merkle tree example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree) in the o1js repository to get a better understanding of how you can leverage the power of Merkle trees.
+You can look at the [Merkle tree example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree) in the o1js repository to get a better understanding of how you can leverage the power of Merkle trees. 您可以查看o1js仓库中的[Merkle tree示例](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/merkle-tree)，以更好地了解如何利用Merkle树的力量。
 
 :::info
 
-Merkle trees are great for _referencing_ off-chain state, but you must also store this off-chain state somewhere.
+Merkle trees are great for _referencing_ off-chain state, but you must also store this off-chain state somewhere. Merkle树非常适合**引用**链下状态，但你也必须将这个链下状态存储在某处。
 
-Where and how to store the data off-chain storage is left up to you, the developer. Tell us how you are using Merkle trees in the  [#zkapps-developers](https://discord.com/channels/484437221055922177/915745847692636181) channel in Mina Protocol Discord.
+Where and how to store the data off-chain storage is left up to you, the developer. Tell us how you are using Merkle trees in the  [#zkapps-developers](https://discord.com/channels/484437221055922177/915745847692636181) channel in Mina Protocol Discord. 在哪里以及如何将数据存储在链下存储由开发人员您来决定。请告诉我们您是如何在Mina Protocol Discord的[#zkapps-developers](https://discord.com/channels/484437221055922177/915745847692636181) 频道中使用Merkle树的。
 
 :::
 

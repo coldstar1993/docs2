@@ -14,25 +14,25 @@ keywords:
 
 # Keccak (SHA-3)
 
-Keccak is a flexible cryptographic hash function that provides more security than traditional SHA hash algorithms.
+Keccak is a flexible cryptographic hash function that provides more security than traditional SHA hash algorithms. Keccak是一种灵活的加密散列函数，与传统的SHA散列算法相比具有更高的安全性。
 
 ## What is Keccak?
 
-Developed by a team of cryptographers from Belgium, Keccak was the winning submission for the National Institute of Standards and Technology (NIST) SHA-3 competition. Keccak was standardized as SHA-3. Keccak is used in many different applications, including Ethereum.
+Developed by a team of cryptographers from Belgium, Keccak was the winning submission for the National Institute of Standards and Technology (NIST) SHA-3 competition. Keccak was standardized as SHA-3. Keccak is used in many different applications, including Ethereum. Keccak由来自比利时的密码学家团队开发，是美国国家标准与技术研究所(NIST) SHA-3竞赛的获奖作品。Keccak被标准化为SHA-3。Keccak被用于许多不同的应用程序，包括以太坊。
 
-Specifically, Keccak is used in the Ethereum ecosystem to hash addresses, transactions, and blocks. It is also used to hash the state trie, the data structure that stores the state of the Ethereum blockchain.
-Because of the common usage of Keccak in Ethereum, it is a key component of o1js that you can use to verify Ethereum transactions and blocks in o1js.
+Specifically, Keccak is used in the Ethereum ecosystem to hash addresses, transactions, and blocks. It is also used to hash the state trie, the data structure that stores the state of the Ethereum blockchain. 具体来说，Keccak在以太坊生态系统中用于哈希地址、交易和区块。它还用于对state trie进行哈希，state trie是存储以太坊区块链状态的数据结构。
+Because of the common usage of Keccak in Ethereum, it is a key component of o1js that you can use to verify Ethereum transactions and blocks in o1js. 由于Keccak在以太坊中经常被使用，所以它是o1js的关键组件，您可以使用它在o1js中验证以太坊交易和区块。
 
 ## Keccak and Poseidon
 
-As an o1js developer, you are likely familar with the [Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html) zero knowledge native hash function. Poseidon operates over the native [Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/) and uses parameters generated specifically for Mina which makes Poseidon the most efficient hash function available in o1js.
+As an o1js developer, you are likely familar with the [Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html) zero knowledge native hash function. Poseidon operates over the native [Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/) and uses parameters generated specifically for Mina which makes Poseidon the most efficient hash function available in o1js. 作为一名o1js开发人员，您可能熟悉[Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html)零知识原生哈希函数。Poseidon在本地[Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/)上运行，并使用专门为Mina生成的参数，这使Poseidon成为o1js中最有效的哈希函数。
 
-In contrast, Keccak is a hash function that requires binary arithmetic. It operates over binary data and is not native to most zero knowledge proofs. For this reason, Keccak is not as efficient as Poseidon, but it is still very useful for verifying Ethereum transactions and blocks.
-So, when you choose what hash function to use, important considerations include the use case and the data that needs to be hashed.
+In contrast, Keccak is a hash function that requires binary arithmetic. It operates over binary data and is not native to most zero knowledge proofs. For this reason, Keccak is not as efficient as Poseidon, but it is still very useful for verifying Ethereum transactions and blocks. 相比之下，Keccak是一个散列函数，需要进行二进制运算。它操作于二进制数据，并且不是大多数零知识证明所原生的。因此，Keccak没有Poseidon那么高效，但它在验证以太坊交易和区块时仍然非常有用。
+So, when you choose what hash function to use, important considerations include the use case and the data that needs to be hashed. 因此，当你选择使用什么散列函数时，重要的考虑因素包括用例和需要散列的数据。
 
 ## Basic usage
 
-Keccak is available in the following configurations that are available under the `Hash` namespace in o1js:
+Keccak is available in the following configurations that are available under the `Hash` namespace in o1js: Keccak在o1js的`Hash`命名空间下的以下配置中可用:
 
 - `Hash.SHA3_256`: NIST SHA3 hash function with output size of 256 bits.
 - `Hash.SHA3_385`: NIST SHA3 hash function with output size of 384 bits.
@@ -41,10 +41,10 @@ Keccak is available in the following configurations that are available under the
 - `Hash.Keccak384`: pre-NIST Keccak hash function with output size of 384 bits.
 - `Hash.Keccak512`: pre-NIST Keccak hash function with output size of 512 bits.
 
-Because Keccak operates over binary data instead of native Field elements like Poseidon, o1js uses the `Bytes` type. `Bytes` is a fixed-length array of bytes that can be used to represent binary data.
-Under the hood, `Bytes` is represented as an array of `UInt8` elements.
+Because Keccak operates over binary data instead of native Field elements like Poseidon, o1js uses the `Bytes` type. `Bytes` is a fixed-length array of bytes that can be used to represent binary data. 因为Keccak操作二进制数据，而不是像Poseidon这样的原生字段元素，所以o1js使用`Bytes`类型。`Bytes`是一个固定长度的字节数组，可用于表示二进制数据。
+Under the hood, `Bytes` is represented as an array of `UInt8` elements. 在底层，`Bytes`被表示为一个`UInt8`元素的数组。
 
-To use `Bytes`, you must extend the `Bytes` class and specify the length of bytes:
+To use `Bytes`, you must extend the `Bytes` class and specify the length of bytes: 要使用`Bytes`，你必须扩展`Bytes`类并指定Bytes的长度:
 
 ```ts
 // This creates a Bytes class that represents 16 bytes
@@ -69,10 +69,10 @@ bytes.bytes.forEach((b) => console.log(b.toBigInt()));
 ```
 
 :::note
-If the input array is smaller than the length of the `Bytes` class, it will be padded with zeros.
+If the input array is smaller than the length of the `Bytes` class, it will be padded with zeros. 如果输入数组小于`Bytes`类的长度，它将被填充0。
 :::
 
-You can also convert a `Bytes` object back to a hex string using `toHex`.
+You can also convert a `Bytes` object back to a hex string using `toHex`. 你也可以使用`toHex`将`Bytes`对象转换回十六进制字符串。
 
 ```ts
 class Bytes3 extends Bytes(3) {}
@@ -83,7 +83,7 @@ console.log('hex', hex);
 // 646f67
 ```
 
-Now that you know how to use `Bytes` as input, you can use it to hash data using Keccak:
+Now that you know how to use `Bytes` as input, you can use it to hash data using Keccak: 现在你知道了如何使用`Bytes`作为输入，你可以使用它来使用Keccak对数据进行哈希:
 
 ```ts
 // define a preimage
@@ -102,7 +102,7 @@ console.log(hash.toHex());
 //69070dda01975c8c120c3aada1b282394e7f032fa9cf32f4cb2259a0897dfc04
 ```
 
-See the o1js repository for a [hashing example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing) that uses SHA-256 and Keccak.
+See the o1js repository for a [hashing example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing) that uses SHA-256 and Keccak. 有关使用SHA-256和Keccak的[哈希示例](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing)，请参阅o1js库。
 
 ### Bytes - API reference
 

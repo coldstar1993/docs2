@@ -15,31 +15,30 @@ keywords:
 
 # SHA-256
 
-SHA-2 is a set of cryptographic hash functions designed by the National Security Agency (NSA) as an improved version of SHA-1, offering enhanced security and comprising multiple variants based on hash size, such as SHA-256 and SHA-512.
-It is also the predecessor of [Keccak (SHA-3)](/zkapps/o1js/keccak). The SHA-2 family is available with different output lengths, including 256-bit (SHA-256) or 512-bit (SHA-512). o1js supports only SHA-2 with an output length of 256 bits.
+SHA-2 is a set of cryptographic hash functions designed by the National Security Agency (NSA) as an improved version of SHA-1, offering enhanced security and comprising multiple variants based on hash size, such as SHA-256 and SHA-512. SHA-2是美国国家安全局(NSA)设计的一组加密散列函数，是SHA-1的改进版本，增强了安全性，并根据散列大小包含多种变体，如SHA-256和SHA-512。
+It is also the predecessor of [Keccak (SHA-3)](/zkapps/o1js/keccak). The SHA-2 family is available with different output lengths, including 256-bit (SHA-256) or 512-bit (SHA-512). o1js supports only SHA-2 with an output length of 256 bits. 它也是[Keccak (SHA-3)](/zkapps/o1js/ Keccak)的前身。SHA-2系列有不同的输出长度，包括256位(SHA-256)和512位(SHA-512)。o1js只支持输出长度为256位的SHA-2。
 
 ## What is SHA-2 and SHA-256?
 
-SHA-256, a part of the SHA-2 family, is a cryptographic hash function that generates a 256-bit (32-byte) hash output,
-widely used for traditional Web2 applications and protocols and blockchain technology. For example, Bitcoin's block headers are hashed twice using SHA-256.
+SHA-256, a part of the SHA-2 family, is a cryptographic hash function that generates a 256-bit (32-byte) hash output, widely used for traditional Web2 applications and protocols and blockchain technology. For example, Bitcoin's block headers are hashed twice using SHA-256.  SHA-256是SHA-2家族中的一员，是一个加密散列函数，生成256位(32字节)的散列输出, 广泛用于传统的Web2应用和协议以及区块链技术。例如，比特币的区块头使用SHA-256进行两次哈希。
 
 ## SHA-256 and Poseidon
 
-As an o1js developer, you are likely familar with the [Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html) zero knowledge native hash function. Poseidon operates over the native [Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/) and uses parameters generated specifically for Mina which makes Poseidon the most efficient hash function available in o1js.
+As an o1js developer, you are likely familar with the [Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html) zero knowledge native hash function. Poseidon operates over the native [Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/) and uses parameters generated specifically for Mina which makes Poseidon the most efficient hash function available in o1js. 作为一名o1js开发人员，您可能熟悉[Poseidon](https://o1-labs.github.io/proof-systems/specs/poseidon.html)零知识原生哈希函数。Poseidon在本地[Pallas base field](https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/) 上运行，并使用专门为Mina生成的参数，这使Poseidon成为o1js中最有效的哈希函数。
 
-In contrast, SHA-2 is a hash function that requires binary arithmetic. It operates over binary data and is not native to most zero knowledge proofs. For this reason, SHA-256 is not as efficient as Poseidon. However, it is still very useful for verifying Ethereum transactions and blocks.
-So, when you choose what hash function to use, important considerations include the use case and the data that needs to be hashed.
+In contrast, SHA-2 is a hash function that requires binary arithmetic. It operates over binary data and is not native to most zero knowledge proofs. For this reason, SHA-256 is not as efficient as Poseidon. However, it is still very useful for verifying Ethereum transactions and blocks. 相比之下，SHA-2是一个需要二进制运算的散列函数。它操作于二进制数据，并且不是大多数零知识证明所原生的。出于这个原因，SHA-256不如Poseidon高效。然而，它对于验证以太坊交易和区块仍然非常有用。
+So, when you choose what hash function to use, important considerations include the use case and the data that needs to be hashed. 因此，当你选择使用什么散列函数时，要重点考虑用例和需要散列的数据。
 
 ## Basic usage
 
-SHA-256 is available in the following configuration under the `Hash` namespace in o1js:
+SHA-256 is available in the following configuration under the `Hash` namespace in o1js: SHA-256在o1js的`Hash`命名空间下的配置如下:
 
-- `Hash.SHA2_256`: SHA2-256 hash function with output size of 256 bits.
+- `Hash.SHA2_256`: SHA2-256 hash function with output size of 256 bits. SHA2-256哈希函数，输出长度为256位。
 
-Because SHA-256 operates over binary data instead of native Field elements like Poseidon, o1js uses the `Bytes` type. `Bytes` is a fixed-length array of bytes that can be used to represent binary data.
-Under the hood, `Bytes` is represented as an array of `UInt8` elements.
+Because SHA-256 operates over binary data instead of native Field elements like Poseidon, o1js uses the `Bytes` type. `Bytes` is a fixed-length array of bytes that can be used to represent binary data. 因为SHA-256操作二进制数据，而不是像Poseidon这样的原生字段元素，所以o1js使用`Bytes`类型。`Bytes`是一个固定长度的字节数组，可用于表示二进制数据。
+Under the hood, `Bytes` is represented as an array of `UInt8` elements. 在底层，`Bytes`被表示为一个`UInt8`元素的数组。
 
-In order to use `Bytes`, you must extend the `Bytes` class and specify the length of bytes. For a detailed explanation, take a look at [How Keccak utilizes Bytes](keccak#bytes---api-reference)
+In order to use `Bytes`, you must extend the `Bytes` class and specify the length of bytes. For a detailed explanation, take a look at [How Keccak utilizes Bytes](keccak#bytes---api-reference)  为了使用`Bytes`，你必须扩展`Bytes`类并指定Bytes的长度。有关详细解释，请查看[How Keccak utilizes Bytes](Keccak#Bytes---api-reference)
 
 ```ts
 // define a preimage
@@ -58,7 +57,7 @@ console.log(hash.toHex());
 //d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592
 ```
 
-See the o1js repository for a [hashing example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing) that uses SHA-256 and Keccak.
+See the o1js repository for a [hashing example](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing) that uses SHA-256 and Keccak. 有关使用SHA-256和Keccak的[哈希示例](https://github.com/o1-labs/o1js/tree/main/src/examples/zkapps/hashing) ，请参阅o1js存储库。
 
 ### SHA-256 - API reference
 

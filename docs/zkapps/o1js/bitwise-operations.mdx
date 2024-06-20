@@ -8,11 +8,12 @@ keywords:
   - o1js
 ---
 
-# Bitwise Operations
+# Bitwise Operations 按位运算符
 
-Bitwise operations manipulate individual bits within a binary representation of a number. They can, at times, resemble boolean operations but apply to a sequence of bits instead of booleans. Bitwise operations are generally available in most programming languages, including TypeScript. o1js provides versions of them that operate on `Field` elements and result in the necessary circuit constraints to generate a zero knowledge proof of the computation. This is especially useful when implementing hashing algorithms such as SHA256.
+Bitwise operations manipulate individual bits within a binary representation of a number. They can, at times, resemble boolean operations but apply to a sequence of bits instead of booleans. Bitwise operations are generally available in most programming languages, including TypeScript. o1js provides versions of them that operate on `Field` elements and result in the necessary circuit constraints to generate a zero knowledge proof of the computation. This is especially useful when implementing hashing algorithms such as SHA256.按位操作操作一个数字的二进制表示中的单个位。它们有时类似于布尔运算，但应用于比特序列而不是布尔值。位操作在大多数编程语言中都是可用的，包括TypeScript。o1js提供了对`Field`元素进行操作的版本，并产生必要的电路约束，以生成计算的零知识证明。这在实现哈希算法(如SHA256)时特别有用。
 
-In o1js, bitwise operations and their attendant helper functions are implemented as [gadgets](/zkapps/o1js/gadgets).
+In o1js, bitwise operations and their attendant helper functions are implemented as [gadgets](/zkapps/o1js/gadgets).在o1js中，位操作及其辅助函数被实现为[gadgets](/zkapps/o1js/gadgets)。
+
 
 Bitwise operations:
 - [and()](#and)
@@ -38,14 +39,14 @@ Helper functions:
 and(a: Field, b: Field, length: number) => Field
 ```
 
-The bitwise `and()` gadget is a provable equivalent to the [bitwise AND (&)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND) operator in JavaScript. It receives two `Field` elements and compares the corresponding pairs of bits from the binary representation of each. The comparison returns 1 only if both bits are 1 and returns 0 if either bit is not 1. This results in a new binary number, which is returned as a `Field` element.
+The bitwise `and()` gadget is a provable equivalent to the [bitwise AND (&)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND) operator in JavaScript. It receives two `Field` elements and compares the corresponding pairs of bits from the binary representation of each. The comparison returns 1 only if both bits are 1 and returns 0 if either bit is not 1. This results in a new binary number, which is returned as a `Field` element.按位运算符`and()`与JavaScript中的[按位运算符和(&)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND) 是等价的。它接收两个`Field`元素，并从每个元素的二进制表示中比较对应的比特对。仅当两个比特位都为1时，比较操作返回1;当任何一个比特位不为1时，比较操作返回0。这将产生一个新的二进制数，它将作为`Field`元素返回。
 
 For details about the implementation, see [AND](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#and) in the Mina book.
 
-The `length` parameter:
+The `length` parameter: `length`参数的作用:
 
-- Specifies how many bits to compare.
-- Adds more constraints for larger numbers.
+- Specifies how many bits to compare. 指定要比较多少位。
+- Adds more constraints for larger numbers. 为更大的数字添加更多约束。
 
 Example:
 
@@ -62,23 +63,23 @@ c.assertEquals(1);
 not(a: Field, length: number, checked: boolean) => Field
 ```
 
-The bitwise `not()` gadget is a provable equivalent to the [Bitwise NOT (~)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT) operator in JavaScript. It receives a `Field` element and negates each bit of its binary representation, turning all the 1s into 0s and all the 0s into 1s. It essentially flips all the bits in a `Field` element. This results in a new binary number, which is returned as a `Field` element.
+The bitwise `not()` gadget is a provable equivalent to the [Bitwise NOT (~)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT) operator in JavaScript. It receives a `Field` element and negates each bit of its binary representation, turning all the 1s into 0s and all the 0s into 1s. It essentially flips all the bits in a `Field` element. This results in a new binary number, which is returned as a `Field` element.按位运算符`not()`与JavaScript中的[按位运算符not(~)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT)是等价的。它接收一个`Field`元素，并对其二进制表示的每个比特进行反运算，将所有的1转换为0，将所有的0转换为1。它本质上翻转了`Field`元素中的所有位。这将产生一个新的二进制数，它将作为`Field`元素返回。
 
-The implementation varies depending on whether the input length is checked. Not checking the input length is more efficient. The input is subtracted from an all-ones bitmask (where all the bits in a binary sequence are set to 1). The tradeoff is that you need to know the input length up front. This is safe when the input `Field` is the result of some other proven operation with a known output length. When the input length is checked, however, the [xor()](#xor) gadget is reused. An all-ones bitmask of equal length to the input `Field` is supplied as the second argument. This results in the same operation with proven input length and more constraints.
+The implementation varies depending on whether the input length is checked. Not checking the input length is more efficient. The input is subtracted from an all-ones bitmask (where all the bits in a binary sequence are set to 1). The tradeoff is that you need to know the input length up front. This is safe when the input `Field` is the result of some other proven operation with a known output length. When the input length is checked, however, the [xor()](#xor) gadget is reused. An all-ones bitmask of equal length to the input `Field` is supplied as the second argument. This results in the same operation with proven input length and more constraints.根据是否检查输入长度，其实现也不同。不检查输入长度更高效。输入从全1位掩码中减去(其中二进制序列中的所有比特都设置为1)。权衡之处在于，你需要预先知道输入长度。当输入`Field`是某个已知输出长度的经过验证的操作的结果时，这是安全的。但在检查输入长度时，就会重用[xor()](#xor)指令片段。第二个参数提供了一个与输入`Field`相等长度的全1位掩码。这将导致相同的操作，但经过验证的输入长度和更多的约束。
 
-The input `Field` must be 254 bits or less.
+The input `Field` must be 254 bits or less.输入的`Field`必须小于等于254位。
 
-The `length` parameter:
+The `length` parameter:`length`参数的作用:
 
-- Specifies how many bits to negate.
-- Adds more constraints for larger numbers.
+- Specifies how many bits to negate.指定要取反的位数。
+- Adds more constraints for larger numbers.为更大的数字添加更多约束。
 
-The `checked` parameter:
+The `checked` parameter:`checked`参数的作用:
 
-- Specifies whether to check the length of the input.
-- Defaults to `false`.
+- Specifies whether to check the length of the input.指定是否检查输入的长度。
+- Defaults to `false`.默认值为`false`。
 
-For details about the implementation, see [NOT](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#not) in the Mina book.
+For details about the implementation, see [NOT](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#not) in the Mina book.有关实现的详细信息，请参阅Mina book中的[NOT](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#not)。
 
 Example:
 
@@ -95,12 +96,12 @@ b.assertEquals(0b1010);
 xor(a: Field, b: Field, length: number) => Field
 ```
 
-The `xor()` gadget is a provable equivalent to the [Bitwise XOR (^)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR) operator in JavaScript. It receives two `Field` elements and compares the corresponding pairs of bits from the binary representation of each. The comparison returns 1 if the bits differ and 0 if they are the same. This results in a new binary number, which is returned as a `Field` element.
+The `xor()` gadget is a provable equivalent to the [Bitwise XOR (^)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR) operator in JavaScript. It receives two `Field` elements and compares the corresponding pairs of bits from the binary representation of each. The comparison returns 1 if the bits differ and 0 if they are the same. This results in a new binary number, which is returned as a `Field` element.`xor()`指令片段与JavaScript中的[按位xor(^)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR)运算符是等价的。它接收两个`Field`元素，并从每个元素的二进制表示中比较对应的比特对。如果两个比特位不相等，比较返回1;如果相等，比较返回0。这将导致一个新的二进制数，它将作为`Field`元素返回。
 
-The `length` parameter:
+The `length` parameter:`length`参数:
 
-- Specifies how many bits to compare.
-- Adds more constraints for larger numbers.
+- Specifies how many bits to compare.指定要比较多少位。
+- Adds more constraints for larger numbers.为更大的数字添加更多约束。
 
 For details about the implementation, see [XOR](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#xor-1) in the Mina book.
 
@@ -120,9 +121,9 @@ c.assertEquals(0b0110);
 leftShift32(field: Field, bits: number) => Field
 ```
 
-The `leftShift32()` gadget is a provable equivalent to the [Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift) operator in JavaScript. It moves the bits of a binary number to the left by the specified number of `bits`. Any bits that fall off the left side are discarded. 0s are padded in from the right. It returns a new `Field` element that is range-checked to 32 bits.
+The `leftShift32()` gadget is a provable equivalent to the [Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift) operator in JavaScript. It moves the bits of a binary number to the left by the specified number of `bits`. Any bits that fall off the left side are discarded. 0s are padded in from the right. It returns a new `Field` element that is range-checked to 32 bits. `leftShift32()`指令片段与JavaScript中的[Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift)运算符是等价的。它将二进制数的每一位向左移动指定位数。任何从左侧脱落的部分都会被丢弃。0从右侧填充。它返回一个范围检查到32位的新`Field`元素。
 
-The input `Field` must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this.
+The input `Field` must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this. 输入的`Field`的大小不能超过32位。你可以使用[rangeCheck32](#rangeCheck32)来确保这一点。
 
 Example:
 
@@ -138,9 +139,9 @@ y.assertEquals(0b110000); // 48 in binary
 leftShift64(field: Field, bits: number) => Field
 ```
 
-The `leftShift64()` gadget is a provable equivalent to the [Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift) operator in JavaScript. It moves the bits of a binary number to the left by the specified number of `bits`. Any bits that fall off the left side are discarded. 0s are padded in from the right. It returns a new `Field` element that is range-checked to 64 bits.
+The `leftShift64()` gadget is a provable equivalent to the [Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift) operator in JavaScript. It moves the bits of a binary number to the left by the specified number of `bits`. Any bits that fall off the left side are discarded. 0s are padded in from the right. It returns a new `Field` element that is range-checked to 64 bits. `leftShift64()`指令片段可以证明与JavaScript中的[Left shift (<<)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift)运算符是等价的。它将二进制数的每一位向左移动指定位数。任何从左侧脱落的部分都会被丢弃。0从右侧填充。它返回一个新的`Field`元素，该元素经过范围检查，长度为64位。
 
-The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this.
+The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this. 输入的`Field`大小不能超过64位。你可以使用[rangeCheck64](# rangeCheck64)来确保这一点。
 
 Example:
 
@@ -159,9 +160,9 @@ Gadgets.leftShift64(xLarge, 32); // throws an error since input exceeds 64 bits
 rightShift64(field: Field, bits: number) => Field
 ```
 
-The `rightShift64()` gadget is a provable equivalent to the [Right shift (>>)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift) operator in JavaScript. It moves the bits of a binary number to the right by the specified number of `bits`. Any bits that fall off the right side are discarded. 0s are padded in from the left. It returns a new `Field` element.
+The `rightShift64()` gadget is a provable equivalent to the [Right shift (>>)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift) operator in JavaScript. It moves the bits of a binary number to the right by the specified number of `bits`. Any bits that fall off the right side are discarded. 0s are padded in from the left. It returns a new `Field` element. `rightShift64()` gadget可以证明与JavaScript中的[右移(>>)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift)操作符是等价的。它将二进制数的每一位向右移动指定的“位数”。任何从右侧脱落的部分都会被丢弃。0从左侧填充。它返回一个新的`Field`元素。
 
-The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this.
+The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this. 输入字段的大小不能超过64位。你可以使用[rangeCheck64](#rangeCheck64)来确保这一点。
 
 Example:
 ```ts
@@ -181,9 +182,9 @@ rotate32(field: Field, bits: number, direction: 'left' | 'right' = 'left') {
 },
 ```
 
-The `rotate32()` gadget performs provable bit rotation on 32-bit numbers. It is similar to left shift and right shift, except the bits that fall off the end wrap around to reappear on the opposite side instead of being discarded. It accepts a `Field` element, the number of `bits` to rotate, and a `direction` of left or right. The default direction is left.
+The `rotate32()` gadget performs provable bit rotation on 32-bit numbers. It is similar to left shift and right shift, except the bits that fall off the end wrap around to reappear on the opposite side instead of being discarded. It accepts a `Field` element, the number of `bits` to rotate, and a `direction` of left or right. The default direction is left. `rotate32()`指令片段对32位数字执行可证明的位旋转。它类似于左移和右移，不同的是，从末端脱落的比特会绕到另一端重新出现，而不是被丢弃。它接受一个`Field`元素，要旋转的`bits`的数量，以及左或右的`方向`。默认方向为左。
 
-The input `Field` must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this.
+The input `Field` must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this. 输入字段的大小不能超过32位。你可以使用[rangeCheck32](#rangeCheck32)来确保这一点。
 
 For implementation details, see [ROTATION](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#rotation) in the Mina book.
 
@@ -208,9 +209,9 @@ rotate64(field: Field, bits: number, direction: 'left' | 'right' = 'left') {
 },
 ```
 
-The `rotate64()` gadget performs provable bit rotation on 32-bit numbers. It is similar to left shift and right shift, except the bits that fall off the end wrap around to reappear on the opposite side instead of being discarded. It accepts a `Field` element, the number of `bits` to rotate, and a `direction` of left or right. The default direction is left.
+The `rotate64()` gadget performs provable bit rotation on 32-bit numbers. It is similar to left shift and right shift, except the bits that fall off the end wrap around to reappear on the opposite side instead of being discarded. It accepts a `Field` element, the number of `bits` to rotate, and a `direction` of left or right. The default direction is left. `rotate64()`指令片段对32位数字执行可证明的位旋转。它类似于左移和右移，不同的是，从末端脱落的比特会绕到另一端重新出现，而不是被丢弃。它接受一个`Field`元素，要旋转的`bits`的数量，以及左或右的`方向`。默认方向为左。
 
-The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this.
+The input `Field` must not exceed 64 bits in size. You can use [rangeCheck64](#rangecheck64) to ensure this. 输入字段`Field`的大小不能超过64位。你可以使用[rangeCheck64](# rangeCheck64)来确保这一点。
 
 For implementation details, see [ROTATION](https://o1-labs.github.io/proof-systems/specs/kimchi.html?highlight=gates#rotation) in the Mina book.
 
@@ -234,9 +235,11 @@ Gadgets.rotate64(xLarge, 32, "left"); // throws an error since input exceeds 64 
 addMod32(a: Field, b: Field) => Field
 ```
 
-The `addMod32()` helper performs addition that overflows on 32-bit numbers, much like the `int32` type. It returns the result of addition modulo `2^32` in a new `Field` element.
+The `addMod32()` helper performs addition that overflows on 32-bit numbers, much like the `int32` type. It returns the result of addition modulo `2^32` in a new `Field` element. `addMod32()`辅助函数对32位数字执行溢出的加法操作，就像`int32`类型一样。它返回一个新的`Field`元素对`2^32`求模的结果。
 
-The input `Field`s must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this.
+The input `Field`s must not exceed 32 bits in size. You can use [rangeCheck32](#rangecheck32) to ensure this. 输入字段的大小不能超过32位。你可以使用[rangeCheck32](#rangeCheck32)来确保这一点。
+
+
 
 Example:
 
@@ -253,9 +256,10 @@ Gadgets.addMod32(a, b).assertEquals(Field(8n));
 divMod32(field: Field) => { remainder: Field, quotient: Field }
 ```
 
-The `divMod32()` helper performs division modulo `2^32`, decomposing a `Field` element into two 32-bit limbs, `remainder` and `quotient`. It returns a tuple of two `Field` elements.
+The `divMod32()` helper performs division modulo `2^32`, decomposing a `Field` element into two 32-bit limbs, `remainder` and `quotient`. It returns a tuple of two `Field` elements. `divMod32()`辅助函数对`2^32`进行除法运算，将`Field`元素分解为两个32位分支，`remainder`和`quotient`。它返回两个`Field`元素的元组。
 
-The helper asserts that the input is no larger than 64 bits in size and that both outputs are no larger than 32 bits in size. It is, therefore, unnecessary to perform range checks.
+The helper asserts that the input is no larger than 64 bits in size and that both outputs are no larger than 32 bits in size. It is, therefore, unnecessary to perform range checks. 该辅助函数断言输入长度不超过64位，两个输出长度都不超过32位。因此，没有必要进行范围检查。
+
 
 Example:
 
@@ -273,7 +277,7 @@ n.assertEquals(quotient.mul(1n << 32n).add(remainder));
 rangeCheck32(x: Field) => void
 ```
 
-The `rangecheck32()` helper asserts that the input `Field` does not exceed 32 bits in size. Note that small, negative inputs are interpreted as large integers close to the field size and will not pass the 32-bit check. To prove that a value lies in the int32 range `[-2^31, 2^31)`, you can use `rangeCheck32(x.add(1n << 31n))`.
+The `rangecheck32()` helper asserts that the input `Field` does not exceed 32 bits in size. Note that small, negative inputs are interpreted as large integers close to the field size and will not pass the 32-bit check. To prove that a value lies in the int32 range `[-2^31, 2^31)`, you can use `rangeCheck32(x.add(1n << 31n))`. `rangecheck32()`辅助函数断言输入的`Field`大小不超过32位。请注意，较小的负输入被解释为接近字段大小的大整数，将无法通过32位检查。要证明一个值在int32范围内'[-2^31,2^31)'，你可以使用`rangeCheck32(x.add(1n << 31n))`。
 
 Example:
 
@@ -291,7 +295,7 @@ Gadgets.rangeCheck32(xLarge); // throws an error since input exceeds 32 bits
 rangeCheck64(x: Field) => void
 ```
 
-The `rangecheck64()` helper asserts that the input `Field` does not exceed 64 bits in size. Note that small, negative inputs are interpreted as large integers close to the field size and will not pass the 64-bit check. To prove that a value lies in the int64 range `[-2^63, 2^63)`, use `rangeCheck64(x.add(1n << 63n))`.
+The `rangecheck64()` helper asserts that the input `Field` does not exceed 64 bits in size. Note that small, negative inputs are interpreted as large integers close to the field size and will not pass the 64-bit check. To prove that a value lies in the int64 range `[-2^63, 2^63)`, use `rangeCheck64(x.add(1n << 63n))`. `rangecheck64()`辅助函数断言输入的`Field`大小不超过64位。请注意，较小的负输入被解释为接近字段大小的大整数，将无法通过64位检查。要证明一个值位于int64范围`[-2^63,2^63)`中，使用`rangeCheck64(x.add(1n << 63n))`。
 
 Example:
 
@@ -309,7 +313,7 @@ Gadgets.rangeCheck64(xLarge); // throws an error since input exceeds 64 bits
 multiRangeCheck([x, y, z]: [Field, Field, Field]) => void
 ```
 
-The `multiRangeCheck()` helper asserts that all three input `Field`s do not exceed 88 bits in size. This is done more efficiently than the standalone range check helpers. The 3x88-bit range check supports BigInts up to 264 bits, which is enough for foreign field multiplication with moduli up to 2^259.
+The `multiRangeCheck()` helper asserts that all three input `Field`s do not exceed 88 bits in size. This is done more efficiently than the standalone range check helpers. The 3x88-bit range check supports BigInts up to 264 bits, which is enough for foreign field multiplication with moduli up to 2^259. `multiRangeCheck()` helper断言所有三个输入字段的大小不超过88位。这比单独的范围检查辅助方法更有效。3x88位的范围检查支持最大264位的大位数，这足以满足模为2^259的外域乘法。
 
 Example:
 
@@ -329,7 +333,7 @@ Gadgets.multiRangeCheck([xLarge, y, z]); // fails
 compactMultiRangeCheck(xy: Field, z: Field) => [Field, Field, Field];
 ```
 
-The `compactMultiRangeCheck()` helper is a variant of [multiRangeCheck](#multirangecheck) where the first two inputs `x` and `y` are passed in combined form `xy = x + 2^88*y`. It splits `x` and `y`, performs the range check, and returns `x`, `y`, and `z` separately.
+The `compactMultiRangeCheck()` helper is a variant of [multiRangeCheck](#multirangecheck) where the first two inputs `x` and `y` are passed in combined form `xy = x + 2^88*y`. It splits `x` and `y`, performs the range check, and returns `x`, `y`, and `z` separately. `compactMultiRangeCheck()`助手是[multiRangeCheck](# multiRangeCheck)的一个变体，其中前两个输入`x`和`y`以组合形式传递`xy = x + 2^88*y`。它分割`x`和`y`，执行范围检查，并分别返回`x`、`y`和`z`。
 
 Example:
 
