@@ -15,9 +15,9 @@ keywords:
 
 # zkApps Getting Started
 
-You can start writing zkApps with just a few steps. The focus of this Getting Started Guide is a high-level workflow to build and deploy quickly.
+You can start writing zkApps with just a few steps. The focus of this Getting Started Guide is a high-level workflow to build and deploy quickly. 你可以通过几个步骤开始编写zkApps。本入门指南的重点是快速构建和部署的鸟瞰工作流。
 
-## High-Level Workflow
+## High-Level Workflow 鸟瞰工作流
 
 1. [Install or update the zkApp CLI](#1-install-or-update-the-zkapp-cli)
 1. [Create a project](#2-create-a-project)
@@ -34,7 +34,7 @@ You can start writing zkApps with just a few steps. The focus of this Getting St
 npm install -g zkapp-cli
 ```
 
-The zkApp CLI provides project scaffolding, including dependencies such as [o1js](/zkapps/o1js), a test framework, code auto-formatting, linting, and more.
+The zkApp CLI provides project scaffolding, including dependencies such as [o1js](/zkapps/o1js), a test framework, code auto-formatting, linting, and more. zkApp CLI提供了项目脚手架，包括像[o1js](/zkapps/o1js)这样的依赖，一个测试框架，代码自动格式化，linting等。
 
 See [zkApp CLI Installation](/zkapps/writing-a-zkapp/introduction-to-zkapps/install-zkapp-cli).
 
@@ -44,40 +44,40 @@ See [zkApp CLI Installation](/zkapps/writing-a-zkapp/introduction-to-zkapps/inst
 $ zk project <project-name>
 ```
 
-[o1js](/zkapps/o1js) is automatically installed when you generate a project using the zkApp CLI.
+[o1js](/zkapps/o1js) is automatically installed when you generate a project using the zkApp CLI. [o1js](/zkapps/o1js)会在你使用zkApp CLI生成项目时自动安装。
 
-A zkApp consists of a smart contract and a UI to interact with it.
+A zkApp consists of a smart contract and a UI to interact with it. zkApp由智能合约和与之交互的UI组成。
 
-- To proceed without an accompanying UI project, select `none` when prompted.
+- To proceed without an accompanying UI project, select `none` when prompted. 要在没有附带的UI项目的情况下继续，请在提示时选择`none`。
 
     See [Option B: Start your own project](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp#option-b-start-your-own-project).
 
-- To create a UI, select a framework and follow the prompts.
+- To create a UI, select a framework and follow the prompts. 要创建UI，请选择一个框架并按照提示操作。
 
     See [How to Write a zkApp UI](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp-ui).
 
 ### 3. Add testing code
 
-When you use the zkApp CLI to create a project, tests and examples are included.
+When you use the zkApp CLI to create a project, tests and examples are included. 当您使用zkApp CLI创建项目时，测试和示例都包含在内。
 
-1. See the `import` statements in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L1-L2) example file.
+1. See the `import` statements in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L1-L2) example file. 请参阅[Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L1-L2) 示例文件中的`import`语句。
 
-1. A simulated `LocalBlockchain` instance you can interact with is included in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L27-L28) example file.
+1. A simulated `LocalBlockchain` instance you can interact with is included in the  [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L27-L28) example file. [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L27-L28) 示例文件中包含了一个模拟的`LocalBlockchain`实例，你可以与之交互。
 
-1. In o1js, an array of 10 test accounts to pay fees and sign transactions are provided for the simulated `LocalBlockchain` instance. These can be accessed with `Local.testAccounts` as shown in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L29-L31) example file. The example uses the public/private key pairs of two of these accounts. The example uses these names, but the names can be anything:
+1. In o1js, an array of 10 test accounts to pay fees and sign transactions are provided for the simulated `LocalBlockchain` instance. These can be accessed with `Local.testAccounts` as shown in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L29-L31) example file. The example uses the public/private key pairs of two of these accounts. The example uses these names, but the names can be anything: 在o1js中，为模拟的`LocalBlockchain`实例提供了10个测试账户，用于支付费用和签署交易。这些可以通过`Local. js `访问。如[Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L29-L31) 示例文件中所示。这个例子使用了其中两个账户的公钥/私钥对。这个示例使用了这些名称，但可以是任何名称:
 
-    - `deployerAccount` deploys the smart contract
-    - `senderAccount` pays transaction fees
+    - `deployerAccount` deploys the smart contract 用于部署智能合约
+    - `senderAccount` pays transaction fees 用于支付交易费用
 
-1. Deploy the smart contract to the simulated `LocalBlockchain` instance that simulates a network for testing purposes.
+1. Deploy the smart contract to the simulated `LocalBlockchain` instance that simulates a network for testing purposes. 将智能合约部署到模拟的`LocalBlockchain`实例，该实例模拟网络以进行测试。
 
     See the `localDeploy` function in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L38-L46) example file.
 
 ### 4. Add functionality
 
-Add the logic for your smart contract.
+Add the logic for your smart contract. 添加智能合约的逻辑。
 
-1. Start experimenting with iterative development to build and test one method at a time. Add functionality to the smart contract by implementing a `@method`.
+1. Start experimenting with iterative development to build and test one method at a time. Add functionality to the smart contract by implementing a `@method`. 开始尝试迭代开发，一次构建和测试一个方法。通过实现`@method`来为智能合约添加功能。
 
     See `@method async update()` in the [Add.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.ts#L20-L24) example file.
 
@@ -87,12 +87,12 @@ Add the logic for your smart contract.
     npm run build
     ```
 
-1. Invoke the `@method` you added or use new functionality in the test file.
+1. Invoke the `@method` you added or use new functionality in the test file. 调用你添加的`@method`或在测试文件中使用新功能。
 
     See the transaction code that invokes the `update()` method in the [Add.test.ts](https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/Add.test.ts#L57-L66) file.
 
-    - If it works as expected with no errors, add more functionality.
-    - If there are errors, look through the stack traces to find the source of the errors and update the contract to resolve them.
+    - If it works as expected with no errors, add more functionality. 如果它按预期工作，没有错误，添加更多功能。
+    - If there are errors, look through the stack traces to find the source of the errors and update the contract to resolve them. 如果有错误，请查看堆栈跟踪以找到错误的来源，并更新契约以解决它们。
 
 ### 5. Create integration test
 
@@ -106,7 +106,7 @@ Add the logic for your smart contract.
 
 ### 7. Test with Lightnet
 
-- Use [Lightnet](zkapps/writing-a-zkapp/introduction-to-zkapps/testing-zkapps-lightnet) to test your zkApp with an accurate representation of Mina blockchain.
+- Use [Lightnet](zkapps/writing-a-zkapp/introduction-to-zkapps/testing-zkapps-lightnet) to test your zkApp with an accurate representation of Mina blockchain. 使用[Lightnet](zkapps/writing-a-zkapp/introduction-to-zkapps/testing-zkapps-lightnet)这个Mina区块链的精确代表来测试您的zkApp。
 
 1. Start Lightnet:
 
@@ -114,26 +114,26 @@ Add the logic for your smart contract.
     zk lightnet start
     ```
 
-    The default settings start a single node that successfully serves the majority of testing requirements.
+    The default settings start a single node that successfully serves the majority of testing requirements. 默认设置启动单个节点，该节点成功地满足大多数测试需求。
 
-1. Verify the status of the local blockchain:
+1. Verify the status of the local blockchain: 验证本地区块链的状态:
 
     ```sh
     zk lightnet status
     ```
 
-1. Communicate with the Mina Accounts-Manager service to fetch account details.
+1. Communicate with the Mina Accounts-Manager service to fetch account details. 与Mina Accounts-Manager服务沟通以获取帐户详细信息。
 
     - Mina Accounts-Manager is deployed to http://localhost:8181/
     - Use HTTP endpoints to acquire, release, list, lock, and unlock accounts
 
-1. Configure your zkApp for Lightnet blockchain. Use the endpoints provided by the `zk lightnet status` command.
+1. Configure your zkApp for Lightnet blockchain. Use the endpoints provided by the `zk lightnet status` command. 针对Lightnet区块链来配置您的zkApp。使用`zk lightnet status`命令提供的端点。
 
-    - Deploy name
-    - Set the Mina GraphQL API URL to deploy to: http://localhost:8080/graphql
-    - Set transaction fee to use when deploying (in MINA): 0.1
+    - Deploy name 部署名称 
+    - Set the Mina GraphQL API URL to deploy to: http://localhost:8080/graphql  设置Mina GraphQL API URL为：http://localhost:8080/graphql
+    - Set transaction fee to use when deploying (in MINA): 0.1 设置部署时使用的交易费用(MINA):0.1
 
-1. Deploy your zkApp to Lightnet:
+1. Deploy your zkApp to Lightnet: 将你的zkApp部署到Lightnet:
 
     ```sh
     zk deploy
@@ -141,17 +141,17 @@ Add the logic for your smart contract.
 
 ### 8. Test with a live network
 
-To deploy the smart contract to the Testnet, run the `zk` commands from the directory that contains your smart contract.
+To deploy the smart contract to the Testnet, run the `zk` commands from the directory that contains your smart contract. 要将智能合约部署到Testnet，请从包含智能合约的目录中运行`zk`命令。
 
-1. Configure your zkApp.
+1. Configure your zkApp. 配置您的zkApp。
 
     ```sh
     zk config
     ```
 
-    Follow the prompts to specify a deploy alias name (can be anything), URL to deploy to, fee (in MINA) to be used when sending your deploy transaction, and the fee payer account.
+    Follow the prompts to specify a deploy alias name (can be anything), URL to deploy to, fee (in MINA) to be used when sending your deploy transaction, and the fee payer account. 根据提示指定部署别名(可以是任何东西)、要部署到的URL、发送部署交易时要使用的费用(MINA)和费用付款人帐户。
 
-    For the Devnet, use:
+    For the Devnet, use: 对于测试完，使用下面的：
 
     - Deploy alias name: `devnet`
 
@@ -163,24 +163,24 @@ To deploy the smart contract to the Testnet, run the `zk` commands from the dire
 
     See [Add a deploy alias to config.json](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-deploy-a-zkapp#add-a-deploy-alias-to-configjson).
 
-    For other Testnets, use the details provided.
+    For other Testnets, use the details provided. 对于其他测试网，请使用提供的详细信息。
 
-1. Choose a fee payer alias. A fee payer account is a developer account that is funded and can always pay fees immediately. When you configure a zkApp, you can choose to use a stored account or create a new fee payer account.
+1. Choose a fee payer alias. A fee payer account is a developer account that is funded and can always pay fees immediately. When you configure a zkApp, you can choose to use a stored account or create a new fee payer account. 选择一个费用支付人别名。付费账户是指资金充足且可以立即支付费用的开发者账户。当你配置一个zkApp时，你可以选择使用一个已有的账户或者创建一个新的付费账户。
 
-    - When prompted to choose an account to pay transaction fees, select to use a different account:
+    - When prompted to choose an account to pay transaction fees, select to use a different account: 当被提示选择一个账户支付交易费用时，请选择使用不同的账户:
 
         ```sh
         Use a different account (select to see options)
         ```
 
-        If this is the first time you are running the `zk config` command, you see these options:
+        If this is the first time you are running the `zk config` command, you see these options: 如果这是你第一次运行`zk config`命令，你会看到以下选项:
 
         ```text
         > Recover fee payer account from an existing base58 private key
         Create a new fee payer key pair
         ```
 
-        The option to choose another account is shown only if you have a cached fee payer account.
+        The option to choose another account is shown only if you have a cached fee payer account.  选择另一个帐户的选项只有在你有一个缓存费用付款帐户时才会显示。
 
     - Next, select **Create a new fee payer key pair**:
 
@@ -189,13 +189,13 @@ To deploy the smart contract to the Testnet, run the `zk` commands from the dire
         NOTE: the private key will be stored in plain text on this computer.
         ```
 
-    - When prompted, give an alias to your new fee payer key pair.
+    - When prompted, give an alias to your new fee payer key pair. 当提示时，给您的新费用付款人密钥对一个别名。
 
 1. Fund your fee payer account.
 
     Follow the prompts to request tMina.
 
-1. Deploy to the Testnet.
+1. Deploy to the Testnet.  部署到测试网络。
 
     ```sh
     zk deploy
@@ -205,7 +205,7 @@ To deploy the smart contract to the Testnet, run the `zk` commands from the dire
 
     See [How to deploy a zkApp](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-deploy-a-zkapp).
 
-1. Create a script to interact with a live network.
+1. Create a script to interact with a live network. 创建一个脚本与实时网络交互。
 
     See the example files:
     - https://github.com/o1-labs/zkapp-cli/blob/main/templates/project-ts/src/interact.ts
@@ -219,13 +219,13 @@ To deploy the smart contract to the Testnet, run the `zk` commands from the dire
     node build/src/interact.js
     ```
 
-1. Keep building and experimenting! After you add features to your contract, repeat [7. Test with a live network](#7-test-with-a-live-network) to test with a live network.
+1. Keep building and experimenting! After you add features to your contract, repeat [7. Test with a live network](#7-test-with-a-live-network) to test with a live network. 继续构建和实验!在您为您的合同添加功能后，重复[7. Test with a live network](#7-test-with-a-live-network)使用实时网络测试。
 
 ## Learn more
 
 To learn more about developing zkApps, see [how zkApps work](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-zkapps-work), [how to write a zkApp](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp), and [zkApps for Ethereum Developers](/zkapps/advanced/zkapps-for-ethereum-developers).
 
-Try the [zkApp Developer Tutorials](/zkapps/tutorials) for use cases that guide you to achieve a defined goal.
+Try the [zkApp Developer Tutorials](/zkapps/tutorials) for use cases that guide you to achieve a defined goal. 请尝试[zkApp Developer Tutorials](/zkapps/tutorials)获取用例，指导你实现既定目标。
 
 ## Get help and join the community
 

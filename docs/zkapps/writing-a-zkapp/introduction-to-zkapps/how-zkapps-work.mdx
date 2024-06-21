@@ -16,136 +16,136 @@ keywords:
 
 # How zkApps Work
 
-zkApps run in the latest versions of [Chrome](https://www.google.com/chrome/index.html), [Firefox](https://www.mozilla.org/en-US/firefox/new/), [Edge](https://microsoft.com/edge), and [Brave](https://brave.com/) web browsers.
+zkApps run in the latest versions of [Chrome](https://www.google.com/chrome/index.html), [Firefox](https://www.mozilla.org/en-US/firefox/new/), [Edge](https://microsoft.com/edge), and [Brave](https://brave.com/) web browsers. zkApps可以在最新版本的[Chrome](https://www.google.com/chrome/index.html)、[Firefox](https://www.mozilla.org/en-US/firefox/new/)、[Edge](https://microsoft.com/edge)和[Brave](https://brave.com/)浏览器中运行。
 
-zkApps are written in TypeScript using the zkApp CLI.
+zkApps are written in TypeScript using the zkApp CLI. zkApps是使用zkApp CLI用TypeScript编写的。
 
-A zkApp consists of two parts:
+A zkApp consists of two parts: 一个zkApp由两部分组成:
 
-- A smart contract
+- A smart contract 智能合约	
 
-- A user interface (UI) for users to interact with the zkApp
+- A user interface (UI) for users to interact with the zkApp 用于用户与zkApp交互的用户界面(UI)
 <figure>
   <img src="/img/3_zkApps_Structure.jpg" width="100%" alt="Diagram showing two parts of a zkApp" />
 </figure>
-- The term _smart contract_ refers to the code written with o1js.
+- The term _smart contract_ refers to the code written with o1js. **智能合约**指的是使用o1js编写的代码。
 
-- The term _zkApp_ refers to the UI + the smart contract.
+- The term _zkApp_ refers to the UI + the smart contract. 术语**zkapp**指的是UI +智能合约。
 
-## Zero knowledge-based smart contracts
+## Zero knowledge-based smart contracts 基于零知识的智能合约
 
-zkApps are based on zero knowledge proofs (zk-SNARKs). As a zkApp developer, you use the zkApp CLI to scaffold and deploy your project.
+zkApps are based on zero knowledge proofs (zk-SNARKs). As a zkApp developer, you use the zkApp CLI to scaffold and deploy your project. zkApps基于零知识证明(zk-SNARKs)。作为一名zkApp开发人员，您可以使用zkApp CLI来脚手架和部署您的项目。
 
-Provable code is written using o1js and generates a prover function and a corresponding verifier function that are derived during the build process.
+Provable code is written using o1js and generates a prover function and a corresponding verifier function that are derived during the build process. Provable代码使用o1js编写，并在构建过程中生成一个prover函数和相应的verifier函数。
 
-The prover function is the function that executes a smart contract's custom logic and runs in an end user's web browser as part of the zkApp. The prover function generates a proof of the executed code.
+The prover function is the function that executes a smart contract's custom logic and runs in an end user's web browser as part of the zkApp. The prover function generates a proof of the executed code. prover函数是执行智能合约的自定义逻辑并作为zkApp的一部分在最终用户的web浏览器中运行的函数。prover函数会生成执行代码的证明。
 
-When interacting with a zkApp UI, users enter any data (for example, buy ABC for y price) that is required as input to the prover function, which then generates a zero knowledge proof.
+When interacting with a zkApp UI, users enter any data (for example, buy ABC for y price) that is required as input to the prover function, which then generates a zero knowledge proof. 当与zkApp UI交互时，用户输入任何数据(例如，以y的价格购买ABC)作为prover函数的输入，该函数然后生成零知识证明。
 
 <figure>
 <img src="/img/4_zkApps_Prover_Function.jpg" width="90%" alt="Diagram showing private and public inputs to prover function to create zero knowledge proof" />
 </figure>
 
-Private and public inputs represent data that must be provided to the prover function when it runs in the end user's web browser.
+Private and public inputs represent data that must be provided to the prover function when it runs in the end user's web browser. 私有和公共输入表示在最终用户的web浏览器中运行时必须提供给prover函数的数据。
 
-Private inputs are not required again. Because public inputs must also be provided to the verifier function when it runs on the Mina network, public inputs are not used for data that you want to remain private.
+Private inputs are not required again. Because public inputs must also be provided to the verifier function when it runs on the Mina network, public inputs are not used for data that you want to remain private. 当verifier函数在Mina网络上运行时，因为公共输入必须提供给verifier函数，所以公共输入不能用于您希望保持私有的数据。
 
-The verifier function validates whether a zero knowledge proof successfully passes all the constraints defined in the prover function. The verifier function _always_ runs quickly and efficiently, irrespective of the prover function's complexity.
+The verifier function validates whether a zero knowledge proof successfully passes all the constraints defined in the prover function. The verifier function _always_ runs quickly and efficiently, irrespective of the prover function's complexity. verifier函数验证零知识证明是否成功地通过了prover函数中定义的所有约束。verifier函数**总是**快速有效地运行，无论验证者函数有多复杂。
 
-Within the Mina network, Mina acts as the verifier and runs the verifier function.
+Within the Mina network, Mina acts as the verifier and runs the verifier function. Mina网络中，Mina充当验证者并运行验证者功能。
 
 <figure>
   <img src="/img/5_zkApps_Verifier_Function.jpg" width="90%" alt="Diagram showing verifier function validation" />
 </figure>
 
-## Prover Function and Verification Key
+## Prover Function and Verification Key Prover函数和Verification Key
 
-After you write a smart contract, build it by running the `npm run build` command. The build process compiles the TypeScript code into JavaScript and outputs the `smart_contract.js` file.
+After you write a smart contract, build it by running the `npm run build` command. The build process compiles the TypeScript code into JavaScript and outputs the `smart_contract.js` file. 在你写完智能合约之后，通过运行`npm run build`命令来构建它。构建过程将TypeScript代码编译为JavaScript并输出`smart_contract.js`文件。
 
-From this file, you can:
+From this file, you can: 在这个文件中，你可以:
 
-- Run a prover function to run your smart contract
-- Generate a verification key to deploy your smart contract
+- Run a prover function to run your smart contract 运行prover函数来运行你的智能合约
+- Generate a verification key to deploy your smart contract 生成验证密钥以部署智能合约
 
-While the prover function runs in an end user's web browser, the verification key lives on-chain for a given zkApp account and is used by the Mina network to verify that a zero knowledge proof has met all constraints defined in the prover. A verification key is required to create a zkApp account.
+While the prover function runs in an end user's web browser, the verification key lives on-chain for a given zkApp account and is used by the Mina network to verify that a zero knowledge proof has met all constraints defined in the prover. A verification key is required to create a zkApp account. 虽然prover函数运行在最终用户的web浏览器中，但验证密钥存在于给定zkApp帐户的链上，并由Mina网络用于验证零知识证明是否满足prover中定义的所有约束。创建zkApp帐户需要验证密钥。
 
-You can also use the verifier function or verification key to verify proofs off-chain.
+You can also use the verifier function or verification key to verify proofs off-chain. 您还可以使用verifier函数或验证键来验证链下的证明。
 
 ## Deploy a smart contract
 
-zkApp developers use the zkApp CLI to deploy smart contracts to the Mina network. The deployment process sends a transaction that contains the verification key that is an output of the verifier function to an address on the Mina blockchain.
+zkApp developers use the zkApp CLI to deploy smart contracts to the Mina network. The deployment process sends a transaction that contains the verification key that is an output of the verifier function to an address on the Mina blockchain. zkApp开发人员使用zkApp CLI将智能合约部署到Mina网络。部署过程将包含verification key(verifier函数的输出)的交易发送到Mina区块链上的地址。
 <figure>
   <img src="/img/6_zkApps_DeploySmartContract.jpg" width="75%" alt="Diagram showing deployment of a Mina zkApp smart contract" />
 </figure>
-When a Mina address contains a verification key, it acts as a zkApp account.
+When a Mina address contains a verification key, it acts as a zkApp account. 当一个Mina地址包含一个verification key时，它就像一个zkApp账户。
 
-A regular Mina account can receive any transactions.
+A regular Mina account can receive any transactions. 一个普通的Mina帐户可以接收任何交易。
 
-You can specify [permissions](/zkapps/writing-a-zkapp/feature-overview/permissions) so a zkApp account can successfully receive only the transactions that satisfy the verifier function.
+You can specify [permissions](/zkapps/writing-a-zkapp/feature-overview/permissions) so a zkApp account can successfully receive only the transactions that satisfy the verifier function. 你可以指定[权限](/zkapps/writing-a-zkapp/feature-overview/permissions)，这样一个zkApp账户只能成功地接收满足verifier函数的交易。
 
-The Mina network rejects any transactions that do not pass the verifier function.
+The Mina network rejects any transactions that do not pass the verifier function.  Mina网络拒绝任何未通过verifier函数的交易。
 
-When you deploy a zkApp to a new Mina address, the Mina Protocol charges a 1 MINA fee for account creation. This fee is unrelated to zkApps and helps to prevent Sybil or denial of service attacks.
+When you deploy a zkApp to a new Mina address, the Mina Protocol charges a 1 MINA fee for account creation. This fee is unrelated to zkApps and helps to prevent Sybil or denial of service attacks. 当您将zkApp部署到一个新的Mina地址时，Mina协议为创建帐户收取1 Mina费用。此费用与zkApps无关，并有助于防止Sybil或拒绝服务攻击(DOS)。
 
 ## Deploy a zkApp UI
 
-A zkApp consists of a smart contract and a UI to interact with it.
+A zkApp consists of a smart contract and a UI to interact with it. zkApp由智能合约和与之交互的UI组成。
 
-To enable users to interact with your smart contract in a web browser, you build a website UI and then deploy this interactive UI as a static website. Choosing a host that offers a global content delivery network (CDN) ensures the best experience for all users.
+To enable users to interact with your smart contract in a web browser, you build a website UI and then deploy this interactive UI as a static website. Choosing a host that offers a global content delivery network (CDN) ensures the best experience for all users. 为了使用户能够在web浏览器中与您的智能合约进行交互，您需要构建一个网站UI，然后将此交互式UI部署为静态网站。选择一个提供全球内容分发网络(CDN)的主机可以确保所有用户的最佳体验。
 
 <img src="/img/7_zkApps_DeploySmartContract.jpg" width="95%" alt="Diagram of a zkApp that includes JavaScript and the UI" />
 
-Your website must contain the JavaScript `smart_contract.js` file that you generated with the `npm run build` command. To learn more, see [How to Write a zkApp](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp).
+Your website must contain the JavaScript `smart_contract.js` file that you generated with the `npm run build` command. To learn more, see [How to Write a zkApp](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp). 你的网站必须包含用`npm run build`命令生成的`smart_contract.js` JavaScript文件。要了解更多信息，请参阅[How To Write a zkApp](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp)。
 
-## How users interact with a zkApp
+## How users interact with a zkApp 用户如何与zkApp交互
 
-To use a zkApp, end users must [Install a Wallet](/using-mina/install-a-wallet) that supports interactions with zkApps.
+To use a zkApp, end users must [Install a Wallet](/using-mina/install-a-wallet) that supports interactions with zkApps. 要使用zkApp，最终用户必须[安装一个钱包](/using-mina/install-a-wallet)来支持与zkApp的交互。
 
-After a zkApp is deployed to a host (for example, mycoolzkapp.com), end users can interact with it:
+After a zkApp is deployed to a host (for example, mycoolzkapp.com), end users can interact with it: 将zkApp部署到主机(例如mycoolzkapp.com)后，终端用户可以与它进行交互:
 
-1. The user visits mycoolzkapp.com.
-1. The user interacts with the zkApp and enters the required data. For example, if this were an automated market maker, the user might specify to buy x amount of ABC at y price.
-1. The prover function in the zkApp generates a zero knowledge proof locally using the data entered by the user. This data can be either:
+1. The user visits mycoolzkapp.com.用户访问mycoolzkapp.com。
+1. The user interacts with the zkApp and enters the required data. For example, if this were an automated market maker, the user might specify to buy x amount of ABC at y price. 用户与zkApp交互并输入所需的数据。例如，如果这是一个自动做市商，用户可能指定以y的价格购买x数量的ABC。
+1. The prover function in the zkApp generates a zero knowledge proof locally using the data entered by the user. This data can be either: zkApp中的prover函数使用用户输入的数据在本地生成零知识证明。这个数据可以是:
 
-    - Private, the data is never seen by the blockchain.
-    - Public, the data is stored on-chain or off-chain, depending on what the zkApp specified as required for a given use case.
+    - Private, the data is never seen by the blockchain. 隐私的，数据永远不会被区块链看到。
+    - Public, the data is stored on-chain or off-chain, depending on what the zkApp specified as required for a given use case. 公开的，数据存储在链上或链下，这取决于zkApp根据给定的用例指定的需求。
 
-  A list of state updates (called account updates) to be created by the transaction is generated. The account updates are associated with this proof.
-1. The user selects **Submit to chain** in the zkApp UI.
+  A list of state updates (called account updates) to be created by the transaction is generated. The account updates are associated with this proof. 这将生成由交易创建的状态更新列表(称为account updates)。account updates与此证明相关联。
+1. The user selects **Submit to chain** in the zkApp UI.  用户在zkApp UI中选择了**Submit to chain**。
 
-    - The user confirms the transaction on their wallet.
-    - The wallet signs the transaction containing the proof and the associated description of state to update.
-    - The wallet sends the transaction to the Mina network.
+    - The user confirms the transaction on their wallet. 用户在他们的钱包上确认交易。
+    - The wallet signs the transaction containing the proof and the associated description of state to update. 钱包对包含要更新的证明和相关状态描述的交易进行签名。
+    - The wallet sends the transaction to the Mina network. 钱包将交易发送到Mina网络。
 
-1. The Mina network receives this transaction and verifies that the proof successfully passes the verifier method listed on the zkApp account. If the network accepts this transaction, this proof and the requested state changes are valid and are allowed to update the zkApp state.
+1. The Mina network receives this transaction and verifies that the proof successfully passes the verifier method listed on the zkApp account. If the network accepts this transaction, this proof and the requested state changes are valid and are allowed to update the zkApp state. Mina网络收到此交易并验证证明成功通过了zkApp帐户上列出的verifier方法。如果网络接受此交易，则此证明和所请求的状态更改是有效的，并允许更新zkApp状态。
 
-The end user's privacy is maintained because their interaction occurs locally in a web browser using JavaScript on the client.
+The end user's privacy is maintained because their interaction occurs locally in a web browser using JavaScript on the client. 终端用户的隐私得到了保护，因为他们的交互是在客户端使用JavaScript在web浏览器中本地进行的。
 
-### How state is updated on-chain
+### How state is updated on-chain 如何在链上更新状态
 
-The zkApp account gets updated on-chain. See [How state is updated on-chain](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-zkapps-work#how-state-is-updated-on-chain)
+The zkApp account gets updated on-chain. See [How state is updated on-chain](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-zkapps-work#how-state-is-updated-on-chain) zkApp账户在链上更新。查看[状态如何在链上更新](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-zkapps-work#how-state-is-updated-on-chain)
 
-When the prover function runs in a web browser, the smart contract outputs a proof and some associated data called "account updates" that are sent to a zkApp address as part of the transaction. The account updates are a JSON plain text description that describes how to update the state on a zkApp account.
+When the prover function runs in a web browser, the smart contract outputs a proof and some associated data called "account updates" that are sent to a zkApp address as part of the transaction. The account updates are a JSON plain text description that describes how to update the state on a zkApp account. 当prover函数在web浏览器中运行时，智能合约输出一个proof和一些称为"account updates"的相关数据，这些数据作为交易的一部分被发送到zkApp地址。"account updates"是一个JSON纯文本描述，描述了如何更新zkApp账户的状态。
 
-The integrity of these account updates is ensured by passing a hash of the account updates as a public input to the smart contract. The account updates must be present and unmodified for the verification function to pass successfully when it runs on Mina. In this way, the Mina network can confirm the integrity of both the proof and the associated account updates that describe how to update the zkApp account state.
+The integrity of these account updates is ensured by passing a hash of the account updates as a public input to the smart contract. The account updates must be present and unmodified for the verification function to pass successfully when it runs on Mina. In this way, the Mina network can confirm the integrity of both the proof and the associated account updates that describe how to update the zkApp account state. 通过将account updates的哈希值作为公共输入传递给智能合约，来确保这些account updates的完整性。当验证函数在Mina上运行时，account updates必须存在且未修改，才能成功通过。通过这种方式，Mina网络可以确认proof和描述如何更新zkApp帐户状态的关联的account updates的完整性。
 
 ### zkApp state
 
-- On-chain state describes state that lives on the Mina blockchain.
+- On-chain state describes state that lives on the Mina blockchain. 链上状态描述驻留在Mina区块链上的状态。
 
-- Off-chain state describes state stored anywhere else.
+- Off-chain state describes state stored anywhere else. 链下状态描述存储在其他任何地方的状态。
 
 ### On-chain state
 
-Each zkApp account provides 8 fields of 32 bytes each of arbitrary storage. You may store anything here as long as it fits in the size provided.
+Each zkApp account provides 8 fields of 32 bytes each of arbitrary storage. You may store anything here as long as it fits in the size provided. 每个zkApp帐户提供8个32字节的任意存储字段。你可以在这里存储任何东西，只要它适合提供的大小。
 
-If you anticipate your state to be larger, or if the state accumulates per user with your zkApp, then use off-chain state instead.
+If you anticipate your state to be larger, or if the state accumulates per user with your zkApp, then use off-chain state instead. 如果您预期您的状态会更大，或者如果您的zkApp的状态会为每个用户累积，那么请使用链下状态。
 
 ### Off-chain state
 
-For larger data, you might want to consider storing the root of a [Merkle tree](/zkapps/o1js/merkle-tree) or a similar data structure within your zkApp's on-chain storage that references self-hosted off-chain state stored elsewhere. Mina doesn't offer an out-of-the-box solution for off-chain storage.
+For larger data, you might want to consider storing the root of a [Merkle tree](/zkapps/o1js/merkle-tree) or a similar data structure within your zkApp's on-chain storage that references self-hosted off-chain state stored elsewhere. Mina doesn't offer an out-of-the-box solution for off-chain storage. 对于更大的数据，你可能想要考虑在你的zkApp的链上存储中存储[Merkle tree](/zkapps/o1js/merkle-tree)的根节点或类似的数据结构，这些数据结构引用了存储在其他地方的自托管链下状态。Mina没有为链下存储提供开箱即用的解决方案。
 
-When the zkApp runs in a user's web browser, it can insert state to an external storage, such as IPFS. When the transaction is sent to the Mina network, if it accepts this zkApp transaction then proof and state are known to be valid so the updates are allowed, then the zkApp transaction can update the root of the Merkle tree that is stored on chain.
+When the zkApp runs in a user's web browser, it can insert state to an external storage, such as IPFS. When the transaction is sent to the Mina network, if it accepts this zkApp transaction then proof and state are known to be valid so the updates are allowed, then the zkApp transaction can update the root of the Merkle tree that is stored on chain. 当zkApp在用户的web浏览器中运行时，它可以将状态插入到外部存储中，例如IPFS。当交易被发送到Mina网络时，如果它接受这个zkApp交易，那么就知道证明和状态是有效的，所以更新是允许的，然后zkApp交易可以更新存储在chain上的Merkle树的根。
 
 <img src="/img/9_zkApps_Off-Chain_State.jpg" width="95%" />
 
