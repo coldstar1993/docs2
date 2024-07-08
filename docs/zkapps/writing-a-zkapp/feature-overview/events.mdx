@@ -17,11 +17,11 @@ keywords:
 
 # Events
 
-Events are _public_ arbitrary information that can be passed along with a transaction. If your zkApp allows users to publish a message, for example, those messages could be events.
+事件是可以随交易一起传递的_公共_任意信息。例如，如果您的 zkApp 允许用户发布消息，则这些消息可能是事件。
 
-Another use case for events are zkApps that keep some large internal state and only store a commitment to that internal state on-chain. For example, a Merkle tree where only the root is stored in on-chain state. Events could be used to attach state changes to the transactions in full. In the Merkle tree example, this could mean sending any Merkle leaves that are changed by the transaction as events. An observer of these transactions can follow along and keep track of the full Merkle tree on their side.
+事件的另一个用例是 zkApps，它们保留一些大型内部状态，并且只在链上存储对该内部状态的承诺。例如，只有根存储在链上状态的 Merkle 树。事件可用于将状态更改完整地附加到交易中。在 Merkle 树示例中，这可能意味着将交易更改的任何 Merkle 叶子作为事件发送。这些交易的观察者可以跟踪并跟踪他们那边的完整 Merkle 树。
 
-To use events, you must declare an `events` field at the top level of your smart contract. The `events` field contains the _names_ and _types_ of your events. Here's an example:
+要使用事件，您必须在智能合约的顶层声明一个“事件”字段。“事件”字段包含事件的_名称_和_类型_。以下是一个例子：
 
 ```ts
 class MyContract extends SmartContract {
@@ -32,9 +32,9 @@ class MyContract extends SmartContract {
 }
 ```
 
-This example declares events called `"add-merkle-leaf"` and `"update-merkle-leaf"`, both with a type of `Field`. Instead of `Field`, you can also use other built-in o1js types as well as any `Struct`. In fact, a custom `Struct` is probably better-suited to encode leaves of a Merkle tree -- we just use `Field` for simplicity here.
+此示例声明了名为“add-merkle-leaf”和“update-merkle-leaf”的事件，两者的类型均为“Field”。除了“Field”，您还可以使用其他内置 o1js 类型以及任何“Struct”。事实上，自定义“Struct”可能更适合对 Merkle 树的叶子进行编码——我们在这里仅使用“Field”以简化操作。
 
-After declaring your events, you can use `this.emitEvent(name, event)` in any smart contract method, where `event` has to have the type you declared for that `name`. Example:
+声明事件后，您可以在任何智能合约方法中使用“this.emitEvent(name, event)”，其中“event”必须具有您为该“name”声明的类型。示例：
 
 ```ts
 class MyContract extends SmartContract {
@@ -50,18 +50,18 @@ class MyContract extends SmartContract {
 }
 ```
 
-Some important facts about events:
+有关事件的一些重要事实：
 
-- Events are not stored on-chain. Only events from the most recent couple of transactions are retained by consensus nodes. After that, the events are discarded, but are still accessible on archive nodes.
-- You can't refer to previously emitted events in a smart contract, because there is no way of proving that the events you refer to are actually the events emitted by that contract.
+- 事件不存储在链上。共识节点仅保留最近几笔交易中的事件。此后，事件将被丢弃，但仍可在存档节点上访问。
+- 您无法在智能合约中引用先前发出的事件，因为无法证明您引用的事件实际上是该合约发出的事件。
 
 :::tip
 
-A zkApp can retrieve events and actions from one or more Mina archive nodes. If your smart contract needs to fetch events and actions from an archive node, see [How to Fetch Events and Actions](fetch-events-and-actions).
+zkApp 可以从一个或多个 Mina 存档节点获取事件和操作。如果你的智能合约需要从存档节点获取事件和操作，请参阅[如何获取事件和操作](fetch-events-and-actions)。
 
 :::
 
-This is all you need to know about events! Think of them as a convenience feature -- a lightweight way of attaching information about your smart contract execution to expose the event to the outside world,  such as your UI. Don't treat events as fully-fledged storage that can be safely accessed in smart contracts.
+这就是您需要了解的有关事件的全部信息！将它们视为一种便利功能 - 一种附加有关智能合约执行的信息以向外界（例如您的 UI）公开事件的轻量级方式。不要将事件视为可以在智能合约中安全访问的完整存储。
 
 ### Events: API reference
 

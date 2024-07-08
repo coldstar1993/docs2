@@ -16,19 +16,19 @@ keywords:
 
 :::caution Warning
 
-When creating updates to unknown accounts in a reducer function, care should be taken to avoid introducing security vulnerabilities.
+在 Reducer 函数中创建对未知帐户的更新时，应小心谨慎，避免引入安全漏洞。
 
-Please follow the guidelines [**here**](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps#best-practices-for-zkapp-security).
+请遵循 [**此处**](/zkapps/writing-a-zkapp/introduction-to-zkapps/secure-zkapps#best-practices-for-zkapp-security) 中的指南。
 
 :::
 
 # Actions & Reducer
 
-Like events, **actions** are _public_ arbitrary information that are passed along with a zkApp transaction. However, actions give you additional power: you can process previous actions in a smart contract! Under the hood, this is possible because a commitment is stored to the history of dispatched actions on every account -- the **actionState**. It allows you to prove that the actions you process are, in fact, the actions that were dispatched to the same smart contract.
+与事件一样，**操作**是与 zkApp 交易一起传递的 _公共_ 任意信息。但是，操作为您提供了额外的功能：您可以在智能合约中处理先前的操作！在底层，这是可能的，因为承诺存储在每个帐户上已调度操作的历史记录中——**actionState**。它允许您证明您处理的操作实际上是已调度到同一智能合约的操作。
 
-Using actions and a "lagging state" pattern, you can write zkApps that can _process concurrent state updates by multiple users_. With this capability, you can imagine all kinds of use cases where actions act as a built-in, "append-only" off-chain storage layer.
+使用操作和“滞后状态”模式，您可以编写可以_处理多个用户的并发状态更新_的 zkApps。借助此功能，您可以想象各种用例，其中操作充当内置的“仅追加”链下存储层。
 
-To use actions, you first have to declare their type on the smart contract. The object to declare is called a **reducer** -- because it can take a list of actions and reduce them:
+要使用操作，您首先必须在智能合约上声明它们的类型。要声明的对象称为**reducer**——因为它可以获取操作列表并减少它们：
 
 ```ts
 import { SmartContract, Reducer, Field } from 'o1js';
@@ -38,33 +38,33 @@ class MyContract extends SmartContract {
 }
 ```
 
-Contrary to events, actions have only one type per smart contract. This type doesn't have a name. The `actionType` in this example is `Field`.
+与事件相反，每个智能合约的操作只有一种类型。此类型没有名称。此示例中的“actionType”为“Field”。
 
-On a `reducer`, you have two functions: `reducer.dispatch()` and `reducer.reduce()`.
+在“reducer”上，有两个函数：“reducer.dispatch()”和“reducer.reduce()”。
 
-- "Dispatch" is simple -- like emitting events, it pushes one additional action to your account's action history:
+- “Dispatch”很简单 - 就像发出事件一样，它会将一个额外的操作推送到您帐户的操作历史记录中：
 
   ```ts
   this.reducer.dispatch(Field(1000));
   ```
 
-- "Reduce" is more involved, but it gives you full power to process actions however it suits your application. It might be easiest to grasp from an example where you have a list of actions and want to find out if one of actions is equal to `1000`.
+- “Reduce” 更复杂，但它赋予您处理操作的全部能力，无论您的应用程序如何。从一个例子中可能最容易理解，在这个例子中，您有一个操作列表，并且想要找出其中一个操作是否等于 `1000`。
 
-In JavaScript, a built-in function on `Array` does this:
+在 JavaScript 中，`Array` 上的内置函数执行以下操作：
 
 ```ts
 let has1000 = array.some((x) => x === 1000);
 ```
 
-However, you can also implement this with `Array.reduce`:
+但是，你也可以使用`Array.reduce`来实现这一点：
 
 ```ts
 let has1000 = array.reduce((acc, x) => acc || x === 1000, false);
 ```
 
-In fact, `Array.reduce` is powerful enough to let you do pretty much all of the array processing you can think of.
+事实上，`Array.reduce` 功能强大，足以让你完成几乎所有你能想到的数组处理。
 
-With `Reducer.reduce`, an in-SNARK operation is just as powerful:
+使用 `Reducer.reduce`，SNARK 内部操作同样强大：
 
 ```ts
 // type for the "accumulated output" of reduce -- the `stateType`
@@ -87,15 +87,15 @@ let { state, actionState } = this.reducer.reduce(
 );
 ```
 
-The `acc` shown earlier is now `state`; you must pass in the state's type as a parameter and pass in an `actionState` which refers to one particular point in the action's history.
+前面显示的 `acc` 现在是 `state`；您必须将状态的类型作为参数传入，并传入一个 `actionState`，它引用操作历史记录中的某个特定点。
 
-Like `Array.reduce`, `Reducer.reduce` takes a callback that has the signature `(state: S, action: A) => S`, where `S` is the `stateType` and `A` is the `actionType`. It returns the result of applying all the actions, in order, to the initial `state`. In this example, the returned `state` is `Bool(true)` because one of the actions in the list is `Field(1000)`. Reduce also returns the new actionState -- so you can store it to use when you reduce the next batch of actions. One last difference to JavaScript `reduce` is that it takes a _list of lists_ of actions, instead of a flat list. Each of the sublists are the actions that were dispatched in one account update (for example, while running one smart contract method).
+与 `Array.reduce` 一样，`Reducer.reduce` 接受一个具有签名 `(state: S, action: A) => S` 的回调，其中 `S` 是 `stateType`，`A` 是 `actionType`。它返回按顺序将所有操作应用于初始 `state` 的结果。在此示例中，返回的 `state` 是 `Bool(true)`，因为列表中的操作之一是 `Field(1000)`。Reduce 还返回新的 actionState - 因此您可以将其存储起来，以便在减少下一批操作时使用。与 JavaScript `reduce` 的最后一个区别是，它采用操作列表列表，而不是平面列表。每个子列表都是在一次帐户更新中分派的操作（例如，在运行一个智能合约方法时）。
 
-As an astute reader, you might have noticed that this use of `state` is eerily similar to a standard "Elm architecture" that scans over an implicit infinite stream of actions (though here they are aggregated in chunks). This problem is familiar to web developers through its instantiation by using the Redux library or by using the `useReducer` hook in React.
+作为一名敏锐的读者，您可能已经注意到，这种“state”的使用与标准的“Elm 架构”非常相似，后者扫描隐式无限的操作流（尽管在这里它们以块的形式聚合）。Web 开发人员通过使用 Redux 库或使用 React 中的“useReducer”钩子来实例化此问题，对此问题并不陌生。
 
-There is one interesting nuance here when compared to traditional Elm Architecture/Redux/useReducer instantiations: Because multiple actions are handled concurrently in an undefined order, it is important that actions [commute](https://en.wikipedia.org/wiki/Commutative_property) against any possible state to prevent race conditions in your zkApp. Given any two actions a1 and a2 applying to some state s, `s * a1 * a2` means the same as `s * a2 * a1`.
+与传统的 Elm Architecture/Redux/useReducer 实例化相比，这里有一个有趣的细微差别：由于多个操作以未定义的顺序同时处理，因此重要的是操作 [commute](https://en.wikipedia.org/wiki/Commutative_property) 针对任何可能的状态，以防止 zkApp 中的竞争条件。给定任何两个应用于某些状态 s 的操作 a1 和 a2，“s * a1 * a2”与“s * a2 * a1”含义相同。
 
-A zkApp can retrieve events and actions from one or more Mina archive nodes. If your smart contract needs to fetch events and actions from an archive node, see [How to Fetch Events and Actions](fetch-events-and-actions).
+zkApp 可以从一个或多个 Mina 存档节点获取事件和操作。如果你的智能合约需要从存档节点获取事件和操作，请参阅[如何获取事件和操作](fetch-events-and-actions)。
 
 ### Reducer - API reference
 
@@ -114,16 +114,16 @@ this.reducer.reduce<S>(
 Reducer.initialActionState: Field;
 ```
 
-In the near future, we want to add a function to retrieve actions from an archive node:
+在不久的将来，我们想要添加一个从档案节点检索操作的功能：
 
 ```ts
 this.reducer.getActions({ fromActionState?: Field, endActionState?: Field }): A[][];
 ```
 
-Use `getActions` for testing with a simulated `LocalBlockchain`. See [Testing zkApps Locally](zkapps/writing-a-zkapp/introduction-to-zkapps/testing-zkapps-locally).
+使用 `getActions` 来测试模拟的 `LocalBlockchain`。请参阅 [本地测试 zkApps](zkapps/writing-a-zkapp/introduction-to-zkapps/testing-zkapps-locally)。
 
 ### Actions for concurrent state updates
 
-One of the most important use cases for actions is to enable concurrent state updates. This enablement is also why actions were originally added to the protocol.
+操作最重要的用例之一是启用并发状态更新。此启用也是最初将操作添加到协议中的原因。
 
-You can see a full code example in [reducer-composite.ts](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/reducer/reducer-composite.ts) that demonstrates this pattern. Leveraging `Reducer.reduce()`, it takes only about 30 lines of code to build a zkApp that handles concurrent state updates.
+您可以在 [reducer-composite.ts](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/reducer/reducer-composite.ts) 中看到演示此模式的完整代码示例。利用 `Reducer.reduce()`，只需大约 30 行代码即可构建一个处理并发状态更新的 zkApp。

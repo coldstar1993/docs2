@@ -14,11 +14,11 @@ keywords:
 
 # Time-Locked Accounts
 
-Time-locking allows you to pay someone in MINA or other custom tokens subject to a vesting schedule. Tokens are initially locked and become available for withdrawal only after a certain time or gradually according to a specific schedule.
+时间锁定允许您根据归属计划用 MINA 或其他自定义代币向某人付款。代币最初被锁定，仅在特定时间后或根据特定计划逐渐可供提取。
 
-By default, accounts are not time-locked.
+默认情况下，帐户不受时间锁定。
 
-The zkApp feature that enables time-locking is the `timing` field that is present on every account:
+启用时间锁定的 zkApp 功能是每个帐户上都存在的“时间”字段：
 
 ```ts
 type Account = {
@@ -34,10 +34,10 @@ type Account = {
 };
 ```
 
-- The `isTimed` field indicates whether this account is time-locked. The default value of `isTimed` is `false`.
-- The other fields are parameters with default values that allow you to define a vesting schedule in a very flexible manner.
+- `isTimed` 字段表示此帐户是否受时间锁定。`isTimed` 的默认值为 `false`。
+- 其他字段是具有默认值的参数，可让您以非常灵活的方式定义归属计划。
 
-This graph shows how each of the timing properties affect the vesting schedule:
+此图显示了每个时间属性如何影响归属计划：
 
 <figure>
   <img
@@ -47,47 +47,47 @@ This graph shows how each of the timing properties affect the vesting schedule:
   />
 </figure>
 
-- The red cross on the left marks the point in time where the `timing` field is set.
-- `isTimed` switches from `false` to `true`.
-- The orange line shows how the amount of unlocked tokens increases over time until it finally reaches its maximum value and stays flat.
-- At this point, `isTimed` flips from `true` back to `false` because no tokens remain locked.
+- 左侧的红色十字标记了“timing”字段设置的时间点。
+- “isTimed”从“false”切换为“true”。
+- 橙色线显示解锁代币的数量如何随着时间的推移而增加，直到最终达到最大值并保持平稳。
+- 此时，“isTimed”从“true”切换回“false”，因为没有代币保持锁定状态。
 
-As shown, the maximum amount of unlocked tokens is defined by the `initialMinimumBalance`. The property is called `initialMinimumBalance` because, even though the tokens show up in the balance, they can't be withdrawn. The account has a a non-zero _minimum balance_. Initially, that minimum balance is equal to the amount of tokens locked -- so, that amount is the "initial minimum balance". Over time, the minimum balance decreases until it hits zero, which is the condition that makes `isTimed` false again.
+如图所示，解锁代币的最大数量由“initialMinimumBalance”定义。该属性被称为“initialMinimumBalance”，因为即使代币出现在余额中，也无法提取。该帐户具有非零的“最低余额”。最初，该最低余额等于锁定的代币数量——因此，该金额是“初始最低余额”。随着时间的推移，最低余额会减少，直到达到零，这是使“isTimed”再次为假的条件。
 
-The other timing-related properties are:
+其他与时间相关的属性包括：
 
-- `cliffTime`: The initial time period during which all tokens are locked. Note that 'time' is measured in Mina by 'slots', where 1 slot is 3min.
-- `cliffAmount`: The quantity of tokens to be unlocked when the cliff time has elapsed. If this amount is greater or equal the 'initial minimum balance', all tokens are unlocked after the cliff time elapses.
-- `vestingPeriod`: After the cliff time elapses, tokens can be set to unlock periodically at a fixed interval, by a fixed quantity. The vesting period is the length of that interval.
-- `vestingIncrement`: The quantity of tokens that are unlocked after each vesting period elapses.
+- `cliffTime`：所有代币被锁定的初始时间段。请注意，在 Mina 中，“时间”以“slots”为单位，其中 1 个 slot 为 3 分钟。
+- `cliffAmount`：悬崖时间过后要解锁的代币数量。如果此数量大于或等于“初始最小余额”，则悬崖时间过后所有代币都会解锁。
+- `vestingPeriod`：悬崖时间过后，可以设置代币以固定间隔定期解锁，解锁数量为固定。归属期是该间隔的长度。
+- `vestingIncrement`：每个归属期过后解锁的代币数量。
 
 :::note
-Only one vesting schedule can be specified per account. The vesting schedule cannot be changed during the vesting period.
+每个帐户只能指定一个归属计划。归属计划在归属期内无法更改。
 
-Because of this restriction, the values of the timing fields cannot be changed when `isTimed` is set to `true`.
-After all tokens are unlocked and `isTimed` flips back to `false`, the account timing becomes mutable again.
+由于此限制，当“isTimed”设置为“true”时，时间字段的值无法更改。
+在所有代币解锁并且“isTimed”切换回“false”后，帐户时间将再次变得可变。
 :::
 
 ### Setting timing in o1js
 
-In o1js, `timing` is one of the account fields that can be updated by using an account update:
+在 o1js 中，“timing” 是可以使用帐户更新来更新的帐户字段之一：
 
 ```ts
 accountUpdate.account.timing.set({ initialMinimumBalance, cliffTime, ...etc });
 ```
 
-When setting timing, all timing-related properties are required, except for `isTimed` which is automatically set by the protocol.
+设置时间时，所有与时间相关的属性都是必需的，除了协议自动设置的“isTimed”。
 
 ### Examples
 
-These examples show how to correctly implement several example use cases.
+这些示例展示了如何正确实现几个示例用例。
 
 #### Example 1: All tokens unlock after 1 week
 
-If you want all tokens to unlock after a certain time, then the only properties you need to consider are `initialMinimumBalance`, `cliffTime`, and `cliffAmount`.
+如果您希望所有代币在一定时间后解锁，那么您唯一需要考虑的属性是 `initialMinimumBalance`、`cliffTime` 和 `cliffAmount`。
 
-- Set `cliffAmount` equal to the `initialMinimumBalance` to ensure all tokens are unlocked when the cliff elapses.
-- Both `vestingPeriod` and `vestingIncrement` are unused, so set them to their default values, `1` and `0`:
+- 将 `cliffAmount` 设置为 `initialMinimumBalance`，以确保在悬崖期过后所有代币都解锁。
+- `vestingPeriod` 和 `vestingIncrement` 均未使用，因此将它们设置为默认值 `1` 和 `0`：
 
   ```ts
   // example: 10 MINA to lock
@@ -109,11 +109,11 @@ If you want all tokens to unlock after a certain time, then the only properties 
 
 #### Example 2: Linear vesting over 1 year
 
-This example does not use a cliff, but vests a certain number of tokens linearly over 1 year.
+此示例未使用悬崖，而是在 1 年内线性授予一定数量的代币。
 
-- Set the `vestingPeriod` to equivalent to 1 month defined in slots, so that new tokens are unlocked every month.
-- Set the `vestingIncrement` to the total amount divided by 12, so that the total amount is unlocked after 12 months.
-- Set both `cliffTime` and `cliffAmount` to 0.
+- 将 `vestingPeriod` 设置为相当于 slot 中定义的 1 个月，以便每月解锁新代币。
+- 将 `vestingIncrement` 设置为总金额除以 12，以便总金额在 12 个月后解锁。
+- 将 `cliffTime` 和 `cliffAmount` 都设置为 0。
 
   ```ts
   // example: 100000 MINA to lock

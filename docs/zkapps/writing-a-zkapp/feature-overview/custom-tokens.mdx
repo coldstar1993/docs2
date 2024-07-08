@@ -19,35 +19,35 @@ keywords:
 
 # Custom Tokens
 
-Blockchain applications have various use cases for custom tokens, including a real-world financial asset, stake in an on-chain protocol, or even skill points in a game.
+区块链应用程序有各种自定义代币的用例，包括现实世界的金融资产、链上协议中的股份，甚至是游戏中的技能点。
 
-Most blockchains, like Ethereum, do not natively support custom tokens. You implement custom tokens as smart contracts on top of the execution layer of the underlying protocol.
-Token standards ensure the interoperability of applications on Etherum, these standardisations are agree upon in ERCs, Ethereum Request for customElements, such as the fungible token standard [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
-The Ethereum community has created and agreed upon other reference implementations and standardisation that are audited and easy to configure, such as [ERC-721](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/) for NFTs.
+大多数区块链，如以太坊，本身并不支持自定义代币。您可以在底层协议的执行层之上将自定义代币实现为智能合约。
+代币标准确保以太坊上应用程序的互操作性，这些标准化在 ERC、以太坊自定义元素请求中得到一致认可，例如可替代代币标准 [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/)。
+以太坊社区已经创建并同意了其他经过审核且易于配置的参考实现和标准化，例如 NFT 的 [ERC-721](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/)。
 
-Mina supports custom token functionality at a low level in the tech stack. Mina treats custom tokens almost the same way as the native MINA token. This approach offers the following benefits:
+Mina 在技术堆栈的低级别支持自定义代币功能。 Mina 对待自定义代币的方式与原生 MINA 代币几乎相同。这种方法具有以下好处：
 
-- As a developer, you do not have to manage as many boilerplate contracts.
-- Developers don't need to keep track of accounts and balances themselves.
-- It is more secure because fewer vulnerabilities can result from incorrect configuration and deployment.
+- 作为开发人员，您不必管理那么多样板合同。
+- 开发人员无需自己跟踪账户和余额。
+- 它更安全，因为由不正确的配置和部署导致的漏洞更少。
 
-Each account on Mina can have tokens associated with it. With zkApps, you build smart contracts that interact with tokens, such as swapping one token for another or depositing MINA tokens. A token manager smart contract is a standard smart contract with the `TokenContract` class that manipulates tokens.
+Mina 上的每个帐户都可以拥有与之关联的代币。使用 zkApps，您可以构建与代币交互的智能合约，例如将一个代币换成另一个代币或存入 MINA 代币。代币管理器智能合约是具有“TokenContract”类的标准智能合约，用于操作代币。
 
 ## Token manager account
 
-The token manager account can set a token symbol (also called token name) for its token. For example, `MYTKN`. Uniqueness is not enforced for token names because the public key of the manager account is used to derive a unique identifier for each token.
+代币管理者账户可以为其代币设置代币符号（也称为代币名称）。例如，“MYTKN”。代币名称不强制唯一性，因为管理者账户的公钥用于为每个代币派生唯一标识符。
 
-A token manager smart contract sets the rules around minting, burning, and sending the custom token:
+代币管理者智能合约设置了铸造、销毁和发送自定义代币的规则：
 
-- Minting generates new tokens. The zkApp updates an account's balance by adding the newly created tokens to it. You can send minted tokens to any existing account in the network.
-- Burning tokens is the opposite of minting. Burning tokens deducts the balance of a certain address by the specified amount. A zkApp cannot burn more tokens than the specified account has.
-- Sending tokens between two accounts must be approved by a zkApp.
+- 铸造会生成新代币。zkApp 通过将新创建的代币添加到账户来更新账户余额。您可以将铸造的代币发送到网络中的任何现有账户。
+- 销毁代币与铸造相反。销毁代币会从某个地址的余额中扣除指定金额。zkApp 不能销毁超过指定账户的代币。
+- 在两个账户之间发送代币必须得到 zkApp 的批准。
 
 ## TokenContract class
 
-Use the `TokenContract` class to perform common token operations, such as minting, burning, and sending tokens. In o1js, the `TokenContract` class is your blueprint for custom token implementations.
+使用 `TokenContract` 类执行常见的代币操作，例如铸造、销毁和发送代币。在 o1js 中，`TokenContract` 类是自定义代币实现的蓝图。
 
-As shown in this [example code](https://github.com/o1-labs/o1js/blob/main/src/lib/mina/token/token-contract.unit-test.ts#L13), you inherit from the `TokenContract` class:
+如此 [示例代码](https://github.com/o1-labs/o1js/blob/main/src/lib/mina/token/token-contract.unit-test.ts#L13) 所示，您从 `TokenContract` 类继承：
 
 ```ts
 class ExampleTokenContract extends TokenContract {
@@ -57,12 +57,12 @@ class ExampleTokenContract extends TokenContract {
 
 ## TokenContract API
 
-The `TokenContract` comes with a set of prebuilt methods and helpers to get you started in your token journey. The base token smart contract implements the following two APIs:
+`TokenContract` 附带一组预构建的方法和帮助程序，可帮助您开始代币之旅。基本代币智能合约实现以下两个 API：
 
-- `Approvable` leaves the `approveBase()` method to be defined by the subclass
-- `Transferable` a wrapper around `Approvable` that deals with transfers of token
+- `Approvable` 将 `approveBase()` 方法留给子类定义
+- `Transferable` 是 `Approvable` 的包装器，用于处理代币的转移
 
-Additionally, the token smart contract also comes with an `internal` namespace which contains helper methods that can be used from within a token contract only.
+此外，代币智能合约还附带一个 `internal` 命名空间，其中包含只能在代币合约内使用的帮助程序方法。
 
 ```ts
 TokenContract.internal: {
@@ -93,14 +93,14 @@ TokenContract.internal: {
 
 ### The Approvable API
 
-Each subclass token contract that inherits the default `TokenContract` must implement the core `approveBase()` method. It has the following signature:
+每个继承默认“TokenContract”的子类代币合约都必须实现核心“approveBase()”方法。它具有以下签名：
 
 ```ts
 approveBase(forest: AccountUpdateForest): void;
 ```
 
-The `TokenContract` also containts helper methods that make it easy to iterate through and approve a forest of child account updates.
-The usual implementation is as easy as this:
+`Token Contract` 还包含辅助方法，可以轻松迭代和批准子帐户更新。
+通常的实现非常简单：
 
 
 ```ts
@@ -109,7 +109,7 @@ The usual implementation is as easy as this:
 }
 ```
 
-However, if you want to do a custom implementation for every child account update, you can utilize the `forEachUpdate()` method.
+但是，如果您想为每个子帐户更新执行自定义实现，则可以使用“forEachUpdate()”方法。
 
 ```ts
 @method async
@@ -129,7 +129,7 @@ approveBase(updates: AccountUpdateForest) {
 ```
 
 
-The `Approvable` API also provides easy to use wrappers around `approveBase()`, such as the following:
+`Approvable` API 还提供了易于使用的`approveBase()`包装器，如下所示：
 
 ```ts
 abstract class TokenContract extends SmartContract {
@@ -151,7 +151,7 @@ abstract class TokenContract extends SmartContract {
 ### The Transferable API
 
 
-The `Transferable` API is a simple wrapper around the `Approvable` API. It implements the following method:
+`Transferable` API 是 `Approvable` API 的简单包装器。它实现了以下方法：
 
 ```ts
 abstract class TokenContract extends SmartContract {
@@ -166,34 +166,34 @@ abstract class TokenContract extends SmartContract {
 }
 ```
 
-Which utlizses the `Approvable` API to send token from an account to another one.
+它利用“Approvable”API将令牌从一个帐户发送到另一个帐户。
 
 ## Custom Token Terminology
 
-If your zkApp interacts with custom tokens, here are the essential terms.
+如果您的 zkApp 与自定义令牌交互，以下是必需的术语。
 
 ### Token id
 
-Token ids are unique identifiers that distinguish between different types of custom tokens. Custom token identifiers are globally unique across the entire network.
+代币 ID 是区分不同类型自定义代币的唯一标识符。自定义代币标识符在整个网络中是全局唯一的。
 
-Token ids are derived from a zkApp. To check the token id of a zkApp, use the `this.token.id` property.
+代币 ID 源自 zkApp。要检查 zkApp 的代币 ID，请使用 `this.token.id` 属性。
 
 ### Token Accounts
 
-Token accounts are like regular accounts, but they hold a balance of a specific custom token instead of MINA. A token account is created from an existing account and is specified by a public key _and_ a token id.
+代币账户与普通账户类似，但它们持有的是特定自定义代币的余额，而不是 MINA。代币账户是从现有账户创建的，由公钥和代币 ID 指定。
 
-Token accounts are specific for each type of custom token, so a single public key can have many different token accounts.
+代币账户特定于每种类型的自定义代币，因此单个公钥可以拥有许多不同的代币账户。
 
-A token account is automatically created for a public key whenever an existing account receives a transaction denoted with a custom token.
+每当现有账户收到用自定义代币表示的交易时，都会自动为公钥创建代币账户。
 
-When a token account is created for the first time, an account creation fee must be paid the same as creating a new standard account.
+首次创建代币账户时，必须支付与创建新标准账户相同的账户创建费。
 
-In addition to sending custom tokens, a **token owner account** can mint and burn custom tokens. A token owner account is the governing zkApp account for a specific custom token.
+除了发送自定义代币之外，**代币所有者账户**还可以铸造和销毁自定义代币。代币所有者账户是特定自定义代币的管理 zkApp 账户。
 
 ### Token Owner
 
-A token owner is an zkApp account that creates, facilitates, and governs how a custom token can be used. The token owner is the account that created the custom token and is the only account that can:
+代币所有者是一个 zkApp 帐户，用于创建、促进和管理自定义代币的使用方式。代币所有者是创建自定义代币的帐户，并且是唯一可以执行以下操作的帐户：
 
-- Mint tokens
-- Burn tokens
-- Approve sending tokens between two accounts
+- 铸造代币
+- 销毁代币
+- 批准在两个帐户之间发送代币

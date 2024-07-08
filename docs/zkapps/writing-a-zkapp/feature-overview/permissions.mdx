@@ -17,66 +17,66 @@ keywords:
 
 # Permissions
 
-Permissions are an integral part of zkApp development because they determine who has the authority to interact and make changes to a specific part of a smart contract.
+权限是 zkApp 开发不可或缺的一部分，因为它们决定了谁有权与智能合约的特定部分进行交互和更改。
 
-Naturally, every smart contract must have proper permissions to prevent attacks or security holes.
-Permissions live on-chain, which means they are a part of the account representation on the network. Permissions are checked every time an account update tries to interact with an account.
+当然，每个智能合约都必须具有适当的权限，以防止攻击或安全漏洞。
+权限存在于链上，这意味着它们是网络上帐户表示的一部分。每次帐户更新尝试与帐户交互时，都会检查权限。
 
 ## Types of Permissions
 
-There are 13 different types of permissions that you can access and adjust to guard a zkApp account:
+有 13 种不同类型的权限可供您访问和调整，以保护 zkApp 帐户：
 
-- `editState`: The permission describing how the zkApp account's eight on-chain state fields are allowed to be manipulated.
+- `editState`：描述如何允许操作 zkApp 帐户的八个链上状态字段的权限。
 
-- `send`: The permission corresponding to the ability to send transactions from this account. For example, this permission determines whether someone can send a transaction to transfer MINA from this particular account.
+- `send`：与从此帐户发送交易的能力相对应的权限。例如，此权限决定某人是否可以发送交易以从此特定帐户转移 MINA。
 
-- `receive`: Similar to `send`, the `receive` permission determines whether a particular account can receive transactions, for example, depositing MINA.
+- `receive`：与 `send` 类似，`receive` 权限决定特定帐户是否可以接收交易，例如存入 MINA。
 
-- `setDelegate`: The permission corresponding to the ability to set the delegate field of the account. The delegate field is the address of another account that this account is delegating its MINA for staking.
+- `setDelegate`：与设置帐户委托字段的能力相对应的权限。委托字段是此帐户委托其 MINA 进行质押的另一个帐户的地址。
 
-- `setPermissions`: The permission corresponding to the ability to change the permissions of the account. As the name suggests, this type of permission describes how already set permissions can be changed.
+- `setPermissions`：与更改帐户权限的能力相对应的权限。顾名思义，这种类型的权限描述了如何更改已设置的权限。
 
-- `setVerificationKey`: The permission corresponding to the ability to change the verification key of the account. Every smart contract has a verification key stored on-chain. The verification key is used to verify off-chain proofs. This permission essentially describes if the verification key can be changed; you can also think of it as the "upgradeability" of smart contracts.
+- `setVerificationKey`：与更改账户验证密钥的能力相对应的权限。每个智能合约都有一个存储在链上的验证密钥。验证密钥用于验证链下证明。此权限本质上描述了验证密钥是否可以更改；您也可以将其视为智能合约的“可升级性”。
 
-- `setZkappUri`: The permission corresponding to the ability to change the `zkappUri` field of the account that stores metadata about the smart contract, for example, link to the source code.
+- `setZkappUri`：与更改账户的 `zkappUri` 字段的能力相对应的权限，该字段存储有关智能合约的元数据，例如，链接到源代码。
 
-- `editActionsState`: The permission that corresponds to the ability to change the actions state of the associated account. Every smart contract can dispatch actions that are committed on-chain. This type of permission describes who can change the actions state.
+- `editActionsState`：与更改关联账户的操作状态的能力相对应的权限。每个智能合约都可以分派在链上提交的操作。这种类型的权限描述了谁可以更改操作状态。
 
-- `setTokenSymbol`: The permission corresponding to the ability to set the token symbol for this account. The `tokenSymbol` field stores the symbol of a token.
+- `setTokenSymbol`：与为此帐户设置代币符号的能力相对应的权限。`tokenSymbol` 字段存储代币的符号。
 
-- `incrementNonce`: The permission that determines whether to increment the nonce with an account update and who can increment the nonce on this account with a transaction.
+- `incrementNonce`：决定是否通过账户更新增加 nonce 以及谁可以通过交易增加此账户上的 nonce 的权限。
 
-- `setVotingFor`: The permission corresponding to the ability to set the chain hash for this account. The `votingFor` field is an on-chain mechanism to set the chain hash of the hard fork this account is voting for.
+- `setVotingFor`：与设置此账户的链哈希的能力相对应的权限。`votingFor` 字段是一种链上机制，用于设置此账户投票的硬分叉的链哈希。
 
-- `access`: This permission is more restrictive than all the other permissions combined! It corresponds to the ability to include any account update for this account in a transaction, even no-op account updates. Usually, the access permission is set to require no authorization. However, for token manager contracts [(custom tokens)](custom-tokens), `access` requires at least proof authorization so that token interactions are approved by calling one of the token manager's methods.
+- `access`：此权限比所有其他权限加起来的限制性更强！它对应于在交易中包含此账户的任何账户更新的能力，甚至是无操作账户更新。通常，访问权限设置为不需要授权。但是，对于代币管理器合约 [(自定义代币)](自定义代币)，`access` 至少需要证明授权，以便通过调用代币管理器的方法之一来批准代币交互。
 
-- `setTiming`: The permission corresponding to the ability to control the vesting schedule of time-locked accounts.
+- `setTiming`：与控制时间锁定账户的归属计划的能力相对应的权限。
 
 ## Authorization
 
-Authorization determines what resources can be accessed, while permissions just describe who has the ability to execute an action.
+授权决定了可以访问哪些资源，而权限仅描述谁有能力执行操作。
 
-A transaction consists of multiple account updates (sort of like instructions to the network) - and each account update must be authorized in one way or another.
-When you inspect an account update directly in o1js or using an explorer, you see the `authorization` field.
+交易由多个帐户更新组成（有点像对网络的指令） - 并且每个帐户更新都必须以某种方式获得授权。
+当您直接在 o1js 中或使用浏览器检查帐户更新时，您会看到 `authorization` 字段。
 
-- If the `authorization` field has a proof attached, it means the transaction is authorized by a proof that is checked against the verification key of the account.
-- If the `authorization` field has a signature, it means the account update is authorized by a signature.
+- 如果 `authorization` 字段附有证明，则表示交易已通过与帐户验证密钥核对的证明获得授权。
+- 如果 `authorization` 字段有签名，则表示帐户更新已通过签名获得授权。
 
 ### Types of Authorizations
 
-The types of authorizations are:
+授权类型包括：
 
-- `none`: Everyone has access to fields with permission set to `none` - and therefore can manipulate the fields as they please.
+- `none`：每个人都可以访问权限设置为 `none` 的字段 - 因此可以随意操作字段。
 
-- `impossible`: If a field permission is set to `impossible`, nothing can ever change this field!
+- `impossible`：如果字段权限设置为 `impossible`，则任何内容都无法更改此字段！
 
-- `signature`: Fields that have their permission set to `signature` can only be manipulated by account updates that are accompanied and authorized by a valid signature.
+- `signature`：权限设置为 `signature` 的字段只能由附有有效签名并由其授权的帐户更新来操作。
 
-- `proof`: Fields that have their permission set to `proof` can be manipulated only by account updates that are accompanied and authorized by a valid proof. Proofs are generated by proving the execution of a smart contract method. A proof is checked against the verification key of the account to ensure that state is changed only if the user generated a valid proof by executing a smart contract method correctly.
+- `proof`：权限设置为 `proof` 的字段只能由附有有效证明并由其授权的帐户更新来操作。证明是通过证明智能合约方法的执行而生成的。将根据帐户的验证密钥检查证明，以确保只有当用户通过正确执行智能合约方法生成有效证明时，状态才会更改。
 
-- `proofOrSignature`: As the name might suggest, permissions with authorization set to `proofOrSignature` accept either a valid signature or a valid proof.
+- `proofOrSignature`：顾名思义，权限设置为 `proofOrSignature` 的权限接受有效签名或有效证明。
 
-This example account update is authorized by a signature:
+此示例帐户更新由签名授权：
 
 ```json
 {
@@ -96,40 +96,40 @@ This example account update is authorized by a signature:
 }
 ```
 
-This example account update has an authorization with a `signature` provided. You can also see it's trying to update the app state of the smart contract.
+此示例帐户更新具有提供“签名”的授权。您还可以看到它正在尝试更新智能合约的应用状态。
 
-However, imagine if a smart contract had the the permission `editState` set to the authorization `none`.
-When authorization is `none`, everyone can freely change the state of the smart contract as they please! Obviously, this is not a safe practice. To allow state changes only when a valid proof accompanies the account update that wants to access the state, set your authorization to `proof` so that the transaction is authorized by a proof that is checked against the verification key of the account. Using a `proof` authorization ensures that state is changed only if the user generated a valid proof by executing a smart contract method correctly.
+但是，想象一下，如果智能合约将权限“editState”设置为授权“none”。
+当授权为“none”时，每个人都可以随意更改智能合约的状态！显然，这不是一种安全的做法。要仅在有效证明伴随想要访问状态的帐户更新时才允许状态更改，请将您的授权设置为“证明”，以便交易由与帐户验证密钥核对的证明授权。使用“证明”授权可确保仅当用户通过正确执行智能合约方法生成有效证明时才会更改状态。
 
 ## Default Permissions
 
-Smart contracts, when first deployed, always start with this default set of permissions:
+智能合约在首次部署时，始终以以下默认权限集开始：
 
-`editState`: `proof`
+`editState`：`proof`
 
-`send`: `proof`
+`send`：`proof`
 
-`receive`: `none`
+`receive`：`none`
 
-`setDelegate`: `signature`
+`setDelegate`：`signature`
 
-`setPermissions`: `signature`
+`setPermissions`：`signature`
 
-`setVerificationKey`: `signature`
+`setVerificationKey`：`signature`
 
-`setZkappUri`: `signature`
+`setZkappUri`：`signature`
 
-`editActionsState`: `proof`
+`editActionsState`：`proof`
 
-`setTokenSymbol`: `signature`
+`setTokenSymbol`：`signature`
 
-To better understand how to leverage permissions to make your smart contract more secure, look at these examples.
+为了更好地了解如何利用权限使您的智能合约更安全，请查看这些示例。
 
 ## Example: UnsecureContract
 
-Some smart contracts manage state and token, such as the native MINA token. To prevent malicious actors from withdrawing all funds, use permissions to secure them.
+一些智能合约管理状态和代币，例如原生 MINA 代币。为防止恶意行为者提取所有资金，请使用权限来保护它们。
 
-Consider the following `UnsecureContract` smart contract. A similar [simple-zkapp-payment.ts](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/simple-zkapp-payment.ts) contract is also provided in the `examples` folder:
+考虑以下 `UnsecureContract` 智能合约。`examples` 文件夹中还提供了类似的 [simple-zkapp-payment.ts](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/simple-zkapp-payment.ts) 合约：
 
 ```ts
 class UnsecureContract extends SmartContract {
@@ -147,11 +147,11 @@ class UnsecureContract extends SmartContract {
 }
 ```
 
-This `UnsecureContract` has only the `withdraw()` method for withdrawing funds from the smart contract account.
+这个 `UnsecureContract` 仅具有 `withdraw()` 方法，用于从智能合约账户中提取资金。
 
-But first, notice that the permissions specified in the `init()` method have set the `send` permission to `Permissions.none()`. Because `none` means you don't have to provide _any_ form of authorization, a malicious actor can easily drain all funds from the smart contract.
+但首先，请注意 `init()` 方法中指定的权限已将 `send` 权限设置为 `Permissions.none()`。因为 `none` 意味着您不必提供任何形式的授权，所以恶意行为者可以轻松地从智能合约中抽走所有资金。
 
-Take a look at the following malicious transaction that abuses this permission:
+看看以下滥用此权限的恶意交易：
 
 ```ts
 tx = await Mina.transaction(account1Address, async () => {
@@ -161,21 +161,21 @@ tx = await Mina.transaction(account1Address, async () => {
 await tx.sign([account1Key]).send();
 ```
 
-This transaction creates a new account update for the smart contract address. Right after that, the new account update sends 1 MINA to the address of the fee payer (`account1Address`).
-At the end of the transaction block, the transaction is signed only with the private key of the fee payer -- not the private key of the smart contract.
+此交易为智能合约地址创建一个新的账户更新。此后，新账户更新将 1 MINA 发送到费用支付者的地址（“account1Address”）。
+在交易块的末尾，交易仅使用费用支付者的私钥进行签名——而不是智能合约的私钥。
 
-Because the permissions for sending funds away from a smart contract are set to `none`, this transaction succeeds and drains 1 MINA from the smart contract.
+由于将资金从智能合约中发送出去的权限设置为“无”，因此此交易成功并从智能合约中取出 1 MINA。
 
-Now, change the `send` permission to `signature` instead:
+现在，将“发送”权限更改为“签名”：
 
 ```diff
 -      send: Permissions.none(),
 +      send: Permissions.signature(),
 ```
 
-If you try to run the same transaction as before, the manual account update fails with `Update_not_permitted_balance`. This check prevents withdrawing funds from the smart contract, since the authorization does not fit the permission for `send` that now requires a valid signature.
+如果您尝试运行与之前相同的交易，手动帐户更新将失败，并显示“Update_not_permitted_balance”。此检查可防止从智能合约中提取资金，因为授权不符合现在需要有效签名的“发送”权限。
 
-You can slightly modify the withdraw transaction to include a valid signature by adding `.requireSignature()` on the withdrawal account update and providing the private key of the smart contract account to `tx.send([zkappKey])`:
+您可以稍微修改提款交易以包含有效签名，方法是在提款帐户更新中添加“.requireSignature()”，并将智能合约帐户的私钥提供给“tx.send([zkappKey])”：
 
 ```ts
 tx = await Mina.transaction(account1Address, async () => {
@@ -186,20 +186,20 @@ tx = await Mina.transaction(account1Address, async () => {
 await tx.sign([account1Key, zkappKey]).send();
 ```
 
-Now that you have provided a valid signature, the transaction succeeds.
+现在您已经提供了有效的签名，交易成功了。
 
-However, this way of authorizing a transaction is not what you expect from a smart contract. If you set a permission to `signature`, only the owner of the zkApp's private key (`zkappKey`) is able to perform the interaction. However, the point of a smart contract is to let anyone interact by trustlessly executing the smart contract code.
+但是，这种授权交易的方式并不是您对智能合约的期望。如果您将权限设置为“签名”，则只有 zkApp 私钥（“zkappKey”）的所有者才能执行交互。但是，智能合约的重点是让任何人都可以通过无需信任地执行智能合约代码来进行交互。
 
-For enabling a trustless execution, use `Permissions.proof()`.
+要启用无需信任的执行，请使用“Permissions.proof()”。
 
-Now, to make `UnsecureContract` a proper smart contract, set the `send` permission to `proof`:
+现在，要使“UnsecureContract”成为真正的智能合约，请将“send”权限设置为“proof”：
 
 ```diff
 -      send: Permissions.signature(),
 +      send: Permissions.proof(),
 ```
 
-Alternatively, you can just delete the entire `init()` method, since a `send` permission of `proof` is already the default:
+或者，您可以删除整个 `init()` 方法，因为 `proof` 的 `send` 权限已经是默认的：
 
 ```diff
 -  init() {
@@ -212,13 +212,13 @@ Alternatively, you can just delete the entire `init()` method, since a `send` pe
 -
 ```
 
-If you try running one of the two transactions from before, which created account updates manually, you'll find that they both fail with `Update_not_permitted_balance`.
+如果您尝试运行之前手动创建帐户更新的两笔交易之一，您会发现它们都因“Update_not_permitted_balance”而失败。
 
-Setting the `send` permission to `proof` means that, to send MINA from this account, you need to execute one of the contract's `@method`.
+将“send”权限设置为“proof”意味着，要从此帐户发送 MINA，您需要执行合约的其中一个“@method”。
 
-The contract already has an `@method` that you can use: `withdraw()`.
+合约已经有一个您可以使用的“@method”：“withdraw()”。
 
-To create a withdrawal transaction that contains a valid proof:
+要创建包含有效证明的提款交易：
 
 ```ts
 tx = await Mina.transaction(account1Address, async () => {
@@ -229,42 +229,42 @@ await tx.prove();
 await tx.sign([account1Key, zkappKey]).send();
 ```
 
-In contrast to the other examples, you don't explicitly create an `AccountUpdate`. Instead, you instantiate `UnsecureContract` and call its `withdraw()` method. Each method call is automatically associated with an account update, for which it creates a valid proof. You can access and modify this account update by using `this` inside the method.
+与其他示例不同，您无需明确创建“AccountUpdate”。相反，您实例化“UnsecureContract”并调用其“withdraw()”方法。每个方法调用都会自动与帐户更新相关联，并为其创建有效证明。您可以在方法中使用“this”来访问和修改此帐户更新。
 
-In this example, use `this.send(...)` to send MINA. By calling the method and doing `tx.prove()`, you satisfy the `proof` authorization requirement for sending MINA.
+在此示例中，使用“this.send(...)”发送 MINA。通过调用该方法并执行“tx.prove()”，您满足了发送 MINA 的“证明”授权要求。
 
-You might have noticed that the contract is still not very secure: Anyone can call the `withdraw()` method to drain any amount of MINA from the contract. That's why the example is called `UnsecureContract`.
+您可能已经注意到，合约仍然不太安全：任何人都可以调用“withdraw()”方法从合约中抽取任意数量的 MINA。这就是该示例被称为“UnsecureContract”的原因。
 
-In a real contract, you would add some conditions to the `withdraw()` code to restrict which users can successfully call the method.
+在实际合约中，您会向“withdraw()”代码添加一些条件，以限制哪些用户可以成功调用该方法。
 
-<!-- TODO: commented until we add the signature page -->
-<!-- To learn about signatures in zkApps, see [Signatures in a smart contract](./signatures-in-zkapps) for a continuation of this example that adds user authorization to the smart contract code. -->
+<!-- TODO: 注释，直到我们添加签名页面 -->
+<!-- 要了解 zkApps 中的签名，请参阅 [智能合约中的签名](./signatures-in-zkapps)，以了解此示例的延续，该示例将用户授权添加到智能合约代码中。-->
 
 ## Upgradeability of smart contracts
 
-Another important part of smart contract development is upgradeability.
+智能合约开发的另一个重要部分是可升级性。
 
-By using permissions, you can make a smart contract upgradeable or not upgradeable.
-On Mina, when you deploy a smart contract you generate a verification key from the contract source code. The verification key and the smart contract are stored on-chain and used to verify proofs that belong to that smart contract.
+通过使用权限，您可以使智能合约可升级或不可升级。
+在 Mina 上，当您部署智能合约时，您会从合约源代码生成验证密钥。验证密钥和智能合约存储在链上，用于验证属于该智能合约的证明。
 
-Remember the permission called `setVerificationKey`? Modify the authorization for this permission to set the upgradability of the smart contract.
+还记得名为“setVerificationKey”的权限吗？修改此权限的授权以设置智能合约的可升级性。
 
 ### Upgrading after an update to the Mina Protocol
 
-At some point, Mina Protocol will undergo an update that is not backwards compatible. When this happens,
-existing zkApps will need to upgrade their verification key to be compatible with the new protocol. If the zkApp does not upgrade,
-the existing verification key will not be able to verify proofs and the zkApp will be unable to interact with the network, effectively rendering it useless.
-To ensure that zkApps can upgrade their verification key after a protocol update, there are special rules in place for the `Impossible` and `Proof` permissions on a verification key.
-Recall that the `Impossible` permission prevents the verification key from being changed, while the `Proof` permission requires a valid proof to do so.
+在某个时候，Mina 协议将经历不向后兼容的更新。发生这种情况时，
+现有的 zkApps 将需要升级其验证密钥以与新协议兼容。如果 zkApp 不升级，
+现有的验证密钥将无法验证证明，zkApp 将无法与网络交互，从而导致其无效。
+为了确保 zkApps 可以在协议更新后升级其验证密钥，验证密钥上的“不可能”和“证明”权限有特殊规则。
+回想一下，“不可能”权限可防止更改验证密钥，而“证明”权限需要有效的证明才能这样做。
 
-Internally, verification key permissions are represented as a tuple of two fields: the mechanism that controls verification key changes (e.g. `Impossible`, `Signature`, `Proof`),
-and a transaction version field (denoted by an integer). The transaction version field specifies the version of a transaction that was supported by the protocol when the zkApp's verification key was
-deployed. This allows the protocol to appropriately enforce permissions when a zkApps was deployed on an earlier version that may no longer be supported.
+在内部，验证密钥权限表示为两个字段的元组：控制验证密钥更改的机制（例如“不可能”、“签名”、“证明”），
+以及交易版本字段（用整数表示）。交易版本字段指定 zkApp 的验证密钥部署时协议支持的交易版本。当 zkApps 部署在可能不再受支持的早期版本上时，这允许协议适当地执行权限。
 
-To allow zkApps to upgrade their verification key after a protocol upgrade, the `Impossible` and `Proof` verification key permissions are automatically treated as `Signature` permissions when the zkApp's transaction version is lower than the current one on Mina Protocol.
-This allows zkApps to upgrade their verification key after a protocol upgrade, even if the permission was originally set to `Impossible` or `Proof`.
+为了允许 zkApps 在协议升级后升级其验证密钥，当 zkApp 的交易版本低于 Mina 协议上的当前版本时，`Impossible` 和 `Proof` 验证密钥权限将自动被视为 `Signature` 权限。
 
-Thus, `setVerificationKey` field behaves slightly different and requires two properties.
+这允许 zkApps 在协议升级后升级其验证密钥，即使权限最初设置为 `Impossible` 或 `Proof`。
+
+因此，`setVerificationKey` 字段的行为略有不同，需要两个属性。
 
 ```ts
 setVerificationKey: {
@@ -273,12 +273,12 @@ setVerificationKey: {
 },
 ```
 
-The first property, `auth`, is one of the previously introduced authentication types - `none`, `impossible`, `proof`, `signature` or `signatureOrProof`.
-The `txnVersion` property on the other hand is the newly introduce transction version, which specifies the version of a transaction that was supported by the protocol when the zkApp verification key was last changed.
+第一个属性 `auth` 是之前引入的身份验证类型之一 - `none`、`impossible`、`proof`、`signature` 或 `signatureOrProof`。
+另一方面，`txnVersion` 属性是新引入的交易版本，它指定了 zkApp 验证密钥上次更改时协议支持的交易版本。
 
-o1js exposes a function `TransactionVersion.current()` which returns the current transaction version of the protocol.
+o1js 公开了一个函数 `TransactionVersion.current()`，它返回协议的当前交易版本。
 
-For example, consider a zkApp that was deployed with the following permissions:
+例如，考虑使用以下权限部署的 zkApp：
 
 ```ts
 this.account.permissions.set({
@@ -290,13 +290,13 @@ this.account.permissions.set({
 });
 ```
 
-After a protocol upgrade, the zkApp will still be able to upgrade its verification key by providing a valid signature. This allows the zkApp to upgrade its verification key to be compatible with the new protocol.
-Once the verification key is upgraded, the permission will revert back to `Impossible`. When it comes to upgrading your zkApp after a protocol upgrade, you can simply provide a valid signature to upgrade the verification key.
+协议升级后，zkApp 仍然能够通过提供有效签名来升级其验证密钥。这允许 zkApp 升级其验证密钥以与新协议兼容。
+验证密钥升级后，权限将恢复为“不可能”。在协议升级后升级 zkApp 时，您只需提供有效签名即可升级验证密钥。
 
-Most of the time, you will not have to manually specify the transaction version because o1js exposes a set of predefined authentication types for `setVerificationKey` under the `Permission.VerificationKey` namespace.
-Mainly, this special set of permissions replaces normal permissions such as `Permission.proof` or `Permission.impossible` by less restrictive permissions - `impossibleDuringCurrentVersion` and `proofDuringCurrentVersion`.
+大多数情况下，您不必手动指定交易版本，因为 o1js 在“Permission.VerificationKey”命名空间下为“setVerificationKey”公开了一组预定义的身份验证类型。
+主要是，这组特殊的权限用限制较少的权限“impossibleDuringCurrentVersion”和“proofDuringCurrentVersion”取代了普通权限（例如“Permission.proof”或“Permission.impossible”）。
 
-Here's a detailed overview of the new permissions:
+以下是新权限的详细概述：
 
 
 ```ts
@@ -332,11 +332,11 @@ VerificationKey: {
 },
 ```
 
-For more information on how this mechanism works, see the [Verification Key Permissions RFC](https://github.com/MinaProtocol/mina/blob/9577ad689a8e4d4f97e1d0fc3d26e20219f4abd1/rfcs/0051-verification-key-permissions.md).
+有关此机制如何工作的更多信息，请参阅[验证密钥权限 RFC](https://github.com/MinaProtocol/mina/blob/9577ad689a8e4d4f97e1d0fc3d26e20219f4abd1/rfcs/0051-verification-key-permissions.md)。
 
 ### Example: Impossible to upgrade
 
-This simple example ensures that the smart contract is not upgradeable during the current transaction version of the protocol. After a verification key is deployed, it cannot be changed until the next backwards incompatible hardfork.
+这个简单的例子确保智能合约在协议的当前交易版本期间不可升级。部署验证密钥后，直到下一次向后不兼容的硬分叉之前，它都无法更改。
 
 ```ts
 class UpgradeabilityImpossible extends SmartContract {
@@ -354,8 +354,8 @@ class UpgradeabilityImpossible extends SmartContract {
 }
 ```
 
-The `UpgradeabilityImpossible` smart contract has only one method: `updateVerificationKey`. By invoking this method and providing a new verification key, the verification key on-chain is expected to change.
-But since `setVerificationKey` permission is specified to be `impossibleDuringCurrentVersion`, invoking that method fails - essentially making the smart contract not upgradeable.
+`UpgradeabilityImpossible` 智能合约只有一个方法：`updateVerificationKey`。通过调用此方法并提供新的验证密钥，链上的验证密钥预计会发生变化。
+但由于 `setVerificationKey` 权限被指定为 `impossibleDuringCurrentVersion`，因此调用该方法会失败 - 本质上使智能合约无法升级。
 
 ```ts
 console.log('try upgrading vk');
@@ -366,20 +366,20 @@ await tx.prove();
 await tx.sign([feePayerKey, zkappKey]).send();
 ```
 
-This transaction tries to replace the existing verification key with a new one, `newVerificationKey`. To can prevent that, set the permissions for a verification key change to `impossible` so the transaction fails.
+此交易尝试用新的验证密钥“newVerificationKey”替换现有验证密钥。为了防止这种情况发生，请将验证密钥更改的权限设置为“不可能”，以使交易失败。
 
-Using the `LocalBlockchain`, you get the following (expected) error:
+使用“LocalBlockchain”，您会收到以下（预期的）错误：
 
 `Error: Transaction verification failed: Cannot update field 'verificationKey' because permission for this field is 'Impossible'`
 
-For the sake of security, it is important to note that you must also set the `setPermissions` permission to `impossible` to make the smart contract truly impossible to upgrade. This permission prevents a zkApp developer from changing the permission `setVerificationKey` to, for example, `signature` - which allows them to manipulate the verification key again.
+为了安全起见，请务必注意，您还必须将“setPermissions”权限设置为“不可能”，以使智能合约真正无法升级。此权限可防止 zkApp 开发人员将权限“setVerificationKey”更改为例如“签名” - 这允许他们再次操纵验证密钥。
 
 ### Example: Upgradeable with a proof
 
-There are situations where you might want the smart contract to be upgradeable.
-Modify the method `updateVerificationKey` to do some checks before you can update the verification key. For example, as the result of a vote or other conditions.
+在某些情况下，您可能希望智能合约可升级。
+修改方法 `updateVerificationKey` 以在更新验证密钥之前进行一些检查。例如，作为投票或其他条件的结果。
 
-For now, just check that you can provide an `x` that is greater than or equal to 5. If this check succeeds, then update the verification key.
+现在，只需检查您是否可以提供大于或等于 5 的 `x`。如果此检查成功，则更新验证密钥。
 
 ```ts
 @method async updateVerificationKey(vk: VerificationKey, x: Field) {
@@ -390,7 +390,7 @@ For now, just check that you can provide an `x` that is greater than or equal to
 }
 ```
 
-You must update the permissions from `setVerificationKey`: `impossibleDuringCurrentVersion` to `proofDuringCurrentVersion` because you want to change the verification key only if a valid proof is provided.
+您必须将权限从“setVerificationKey”：“impossibleDuringCurrentVersion”更新为“proofDuringCurrentVersion”，因为您只想在提供有效证明时才更改验证密钥。
 
 ```ts
 this.account.permissions.set({
@@ -399,7 +399,7 @@ this.account.permissions.set({
 });
 ```
 
-Now when you invoke the `updateVerificationKey` method, the transaction generates a valid smart contract execution proof to succeed and upgrade the verification key to a new one.
+现在，当你调用 `updateVerificationKey` 方法时，交易会生成有效的智能合约执行证明以成功并将验证密钥升级为新的。
 
 ```ts
 console.log('try upgrading vk');
@@ -412,6 +412,6 @@ await tx.sign([feePayerKey, zkappKey]).send();
 
 ## Where to learn more
 
-Integration tests exercise the behavior of different permissions, including upgradeability.
+集成测试测试不同权限的行为，包括可升级性。
 
-Check out the [voting integration test](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/test.ts#L50) and the [DEX integration test](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/dex/upgradability.ts) examples.
+查看 [投票集成测试](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/test.ts#L50) 和 [DEX 集成测试](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/dex/upgradability.ts) 示例。

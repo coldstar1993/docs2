@@ -17,37 +17,37 @@ keywords:
 
 # How to Fetch Events and Actions
 
-[Events](#events) and [Actions](#actions-and-reducer) are two distinct mechanisms for logging information alongside a transaction:
+[Events](#events) 和 [Actions](#actions-and-reducer) 是两种不同的机制，用于记录与交易相关的信息：
 
-- Events are not meant for use within proofs directly, as they can't be predicated on inside proofs. Events are used to signal to UIs. You can also use events for reconstructing Merkle trees.
+- 事件不适用于直接在证明中使用，因为它们无法基于内部证明。事件用于向 UI 发出信号。您还可以使用事件来重建 Merkle 树。
 
-- Actions can be accessed within provable code by using reducers.
-
-:::info
-
-Events and actions are not stored in the ledger and exist only on the transaction.
+- 可以使用 Reducer 在可证明代码中访问操作。
 
 :::info
 
-Since Mina nodes do not store historical network information and events and actions are not kept on-chain, emitted events and actions are preserved only in the archive node. Consequently, a zkApp can retrieve previously emitted events and actions from one or more Mina archive nodes.
+事件和动作不存储在分类账中，仅存在于交易中。
 
-The Mina archive node offers the ability for node operators to store historical blockchain data using `PostgreSQL`. However, archive nodes do not expose a built-in API to query this data publicly.
+:::info
 
-## Using the Archive Node API with o1js
+由于 Mina 节点不存储历史网络信息，并且事件和操作不保存在链上，因此发出的事件和操作仅保存在存档节点中。因此，zkApp 可以从一个或多个 Mina 存档节点检索以前发出的事件和操作。
 
-There are two parts to using the archive node with o1js:
+Mina 存档节点为节点操作员提供了使用 `PostgreSQL` 存储历史区块链数据的能力。但是，存档节点不公开内置 API 来公开查询此数据。
 
-- Archive node operators run the [Archive-Node-API](https://github.com/o1-labs/archive-node-api) to provide a GraphQL API from which zkApp smart contracts can retrieve events and actions.
+## 将存档节点 API 与 o1js 结合使用
 
-- o1js developers specify the archive node API endpoint during the network configuration to allow access to historical events and actions.
+将存档节点与 o1js 结合使用分为两个部分：
 
-The `Archive-Node-API` enables o1js to fetch events and actions.
+- 存档节点操作员运行 [Archive-Node-API](https://github.com/o1-labs/archive-node-api) 以提供 GraphQL API，zkApp 智能合约可以从中检索事件和操作。
+
+- o1js 开发人员在网络配置期间指定存档节点 API 端点，以允许访问历史事件和操作。
+
+`Archive-Node-API` 使 o1js 能够获取事件和操作。
 
 ## o1js network configuration
 
-If your smart contract needs to fetch events and/or actions from an archive node, provide an `archive` property in the configuration object passed to the `Mina.Network({mina: '...', archive: '...'})` where the `archive` property value is the URL for the `Archive-Node-API` service that you want to use. If this property does not exist, an error will occurs at the time of the events/actions fetching.
+如果您的智能合约需要从存档节点获取事件和/或操作，请在传递给 `Mina.Network({mina: '...', archive: '...'})` 的配置对象中提供 `archive` 属性，其中 `archive` 属性值是您要使用的 `Archive-Node-API` 服务的 URL。如果此属性不存在，则在获取事件/操作时会发生错误。
 
-For example:
+例如：
 
 ```ts
 const Network = Mina.Network({
@@ -59,7 +59,7 @@ Mina.setActiveInstance(Network);
 
 ## Fetching Actions from an Archive Node
 
-Within your smart contract, you can use `getActions()` to retrieve actions emitted by your smart contract as part of previous transactions.
+在您的智能合约中，您可以使用“getActions（）”来检索智能合约作为先前交易的一部分发出的操作。
 
 ```ts
 class MyContract extends SmartContract {
@@ -81,13 +81,13 @@ class MyContract extends SmartContract {
 }
 ```
 
-By default, `getActions()` retrieves all actions from the very first action emitted for that zkApp account. However, you can provide an object that contains an optional property named `fromActionState`, where the value is an `actionsState` to indicate the starting point of the actions to be retrieved and processed by your smart contract.
+默认情况下，`getActions()` 会从为该 zkApp 帐户发出的第一个操作中检索所有操作。但是，您可以提供一个包含名为 `fromActionState` 的可选属性的对象，其中的值是 `actionsState`，以指示要由您的智能合约检索和处理的操作的起点。
 
-For an end-to-end example of zkApp fetching actions from a running network and storing the action state within your zkApp account, see the voting app [example](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/voting.ts) file that is provided in the o1js repo.
+有关 zkApp 从正在运行的网络中获取操作并将操作状态存储在您的 zkApp 帐户中的端到端示例，请参阅 o1js repo 中提供的投票应用 [示例](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/voting.ts) 文件。
 
-### Fetching Events from an Archive Node
+### 从存档节点获取事件
 
-Within your smart contract, you can use `fetchEvents()` to retrieve events emitted by your smart contract as part of previous transactions.
+在您的智能合约中，您可以使用 `fetchEvents()` 检索您的智能合约作为先前交易的一部分发出的事件。
 
 ```ts
 const zkapp = new MyContract(address);
@@ -103,9 +103,9 @@ const fetchedEvents = await fetchEvents({
 });
 ```
 
-By default, `fetchEvents()` retrieves all events from the very first event ever emitted for that zkApp account. Additionally, you can provide a starting block height and an ending block height as optional parameters to limit the range of events fetched.
+默认情况下，`fetchEvents()` 会从该 zkApp 帐户发出的第一个事件中检索所有事件。此外，您可以提供起始块高度和结束块高度作为可选参数，以限制所获取事件的范围。
 
-- If the ending block is not provided, `fetchEvents()` fetches all events up to the latest block.
-- If the starting block is not provided, it fetches all events from the beginning of the zkApp's history.
+- 如果未提供结束块，`fetchEvents()` 会获取所有事件，直到最新块。
+- 如果未提供起始块，它会从 zkApp 历史记录的开头获取所有事件。
 
-To see an end-to-end example of zkApp fetching events from a running network, see the [example](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/run-berkeley.ts) file that is provided in the codebase repo.
+要查看 zkApp 从正在运行的网络获取事件的端到端示例，请参阅代码库存储库中提供的 [示例](https://github.com/o1-labs/o1js/blob/main/src/examples/zkapps/voting/run-berkeley.ts) 文件。

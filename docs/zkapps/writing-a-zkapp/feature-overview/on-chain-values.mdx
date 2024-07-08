@@ -15,22 +15,22 @@ keywords:
 
 # On-Chain Values
 
-In a zkApp, you can access the current [on-chain state](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp#on-chain-state) and many other on-chain values of the account.
+在 zkApp 中，您可以访问当前的 [链上状态](/zkapps/writing-a-zkapp/introduction-to-zkapps/how-to-write-a-zkapp#on-chain-state) 以及账户的许多其他链上值。
 
-The zkApp account's on-chain state can be updated by account updates included in a transaction (see [Tutorial 10: Account Updates](/zkapps/tutorials/account-updates)). On the Mina blockchain, each zkApp account provides eight fields of ~32 bytes each of arbitrary storage for the on-chain state.
+zkApp 账户的链上状态可以通过交易中包含的账户更新进行更新（参见 [教程 10：账户更新](/zkapps/tutorials/account-updates)）。在 Mina 区块链上，每个 zkApp 账户为链上状态提供八个字段，每个字段约 32 字节，可任意存储。
 
-Two possible use cases:
+两种可能的用例：
 
-- You want to let users vote on a proposal, but only within a specific timespan. To restrict the dates, your zkApp can require that the current timestamp lies in a certain range.
-- In DeFi, you want to compute amounts relative to a balance. For example, paying a yield of `0.001` times the account balance requires the current on-chain balance.
+- 您希望让用户对提案进行投票，但只能在特定时间范围内进行。为了限制日期，您的 zkApp 可以要求当前时间戳位于某个范围内。
+- 在 DeFi 中，您希望计算相对于余额的金额。例如，支付账户余额`0.001`倍的收益需要当前链上余额。
 
-There are two categories of on-chain values:
+链上值有两类：
 
-- **Network**: includes the current timestamp, block height, total Mina in circulation, and other network state
-- **Account**: includes fields and properties of the zkApp account, such as balance, nonce, and delegate
+- **网络**：包括当前时间戳、区块高度、流通中的 Mina 总量和其他网络状态
+- **账户**：包括 zkApp 账户的字段和属性，例如余额、随机数和委托
 
-In a smart contract, the subfields are accessible on `this.network` and `this.account`.
-For example, the timestamp on `this.network.timestamp` has four methods:
+在智能合约中，子字段可在`this.network`和`this.account`上访问。
+例如，`this.network.timestamp` 上的时间戳有四种方法：
 
 ```ts
 this.network.timestamp.get();
@@ -38,12 +38,12 @@ this.network.timestamp.requireEquals(timestamp);
 this.network.timestamp.requireBetween(lower, upper);
 ```
 
-- The familiar on-chain state has the same `get()` and `requireEquals()` methods.
-- The `requireBetween()` method has even more power: it allows you to make assertions that the timestamp is between `lower` and `upper` (inclusive).
+- 熟悉的链上状态具有相同的 `get()` 和 `requireEquals()` 方法。
+- `requireBetween()` 方法具有更强大的功能：它允许您断言时间戳介于 `lower` 和 `upper` 之间（包括）。
 
 ### Example: Restricting timestamps
 
-To use the `requireBetween()` method in a voting example, you can allow voting throughout September 2024. Timestamps are represented as a `UInt64` in milliseconds since the [UNIX epoch](https://en.wikipedia.org/wiki/Unix_time). You can use the JS `Date` object to easily convert to this representation. In the simplest case, a zkApp could just hard-code the dates:
+要在投票示例中使用 `requireBetween()` 方法，您可以允许在 2024 年 9 月进行投票。时间戳以 `UInt64` 表示，以自 [UNIX 纪元](https://en.wikipedia.org/wiki/Unix_time) 以来的毫秒数表示。您可以使用 JS `Date` 对象轻松转换为此表示形式。在最简单的情况下，zkApp 只需对日期进行硬编码即可：
 
 ```ts
 const startDate = UInt64.from(Date.UTC(2022, 9, 1));
@@ -59,13 +59,13 @@ class VotingApp extends SmartContract {
 }
 ```
 
-A more refined example could store the current start date in an on-chain state variable, which can then be reset by some process that is also encoded by the zkApp.
+一个更精细的例子可以将当前开始日期存储在链上状态变量中，然后可以通过一些也由 zkApp 编码的进程重置该变量。
 
 ### Network reference
 
-For completeness, here is the list of network states you can use and make assertions about in your zkApp.
+为了完整起见，以下是您可以在 zkApp 中使用并做出断言的网络状态列表。
 
-All of these fields have a `get()` and an `requireEquals()` method. The subset that represents "ordered values" (those that are `UInt32` or `UInt64`) also have `requireBetween()`.
+所有这些字段都有一个 `get()` 和一个 `requireEquals()` 方法。表示“有序值”的子集（那些是 `UInt32` 或 `UInt64`）也有 `requireBetween()`。
 
 ```ts
 // current UNIX time in milliseconds, as measured by the block producer
@@ -97,11 +97,11 @@ this.network.nextEpochData.lockCheckpoint.get(): Field;
 this.network.nextEpochData.startCheckpoint.get(): Field;
 ```
 
-You don't have to remember this, just type `this.network.` and let the intelligent code complete guide you.
+你不需要记住这一点，只需输入“this.network。”然后让智能代码完全引导你。
 
 ### Account reference
 
-Here's the full list of values you can access on the zkApp account. Like the network states, these values have `get()` and `requireEquals()`. Balance and nonce also have `requireBetween()`.
+这是您可以在 zkApp 帐户上访问的值的完整列表。与网络状态一样，这些值具有 `get()` 和 `requireEquals()`。Balance 和 nonce 也具有 `requireBetween()`。
 
 ```ts
 // the account balance; this might be nanoMINA or a custom token
@@ -121,22 +121,22 @@ this.account.receiptChainHash.get(): Field;
 
 ### Bailing out
 
-In some rare cases, you might, for whatever reason, want to `get()` an on-chain value _without_ constraining it to any value.
-However, if you try this, o1js throws a helpful error reminding you to use `requireEquals()` and `requireBetween()`.
-As an escape hatch, if you want to `get()` a value and are really sure you do not want to constrain the on-chain value in any way,
-you can use `requireNothing()` on all of these fields (including on-chain state). **Use `requireNothing()` at your own risk.**
+在极少数情况下，您可能出于某种原因想要 `get()` 一个链上值，而不将其限制为任何值。
+但是，如果您尝试这样做，o1js 会抛出一个有用的错误，提醒您使用 `requireEquals()` 和 `requireBetween()`。
+作为逃生舱，如果您想 `get()` 一个值，并且确实确定您不想以任何方式限制链上值，
+您可以在所有这些字段（包括链上状态）上使用 `requireNothing()`。**使用 `requireNothing()` 需要您自担风险。**
 
 :::danger
 
-`requireNothing()` should be rarely used and could cause security issues through unexpected behavior if used improperly. Be certain you know what you're doing before using this.
+`requireNothing()` 应该很少使用，如果使用不当，可能会通过意外行为导致安全问题。在使用它之前，请确保您知道自己在做什么。
 
 :::
 
 ### Setting account fields
 
-Just like on-chain state, some account fields can be written to. Again, the API is consistent with state: `this.account.<field>.set(newValue)`.
+就像链上状态一样，某些帐户字段可以写入。同样，API 与状态一致：`this.account.<field>.set(newValue)`。
 
-For example, here's how to change permissions on an account:
+例如，以下是如何更改帐户的权限：
 
 ```ts
 this.account.permissions.set({
@@ -154,9 +154,9 @@ To set the delegate (the account that your smart contract delegates its stake to
 this.account.delegate.set(delegatePublicKey);
 ```
 
-The fields that you can set are not the same as the fields that you can make assertions about.
+您可以设置的字段与您可以做出断言的字段不同。
 
-Here is the full list of fields that have a `.set()`:
+以下是具有 `.set()` 的字段的完整列表：
 
 ```ts
 // the account that this account delegates its MINA stake to
@@ -175,9 +175,9 @@ this.account.timing.set(value: Timing);
 
 ### Accessing accounts other than the zkApp's account
 
-The API described in this section (get / set / assertEquals / ...) can be used to access the zkApp account itself, but also any other account. Account updates are a flexible and powerful data structure that can express all kinds of updates, events, and preconditions you use to develop smart contracts. See [Tutorial 10: Account Updates](/zkapps/tutorials/account-updates).
+本节中描述的 API（get / set / assertEquals / ...）可用于访问 zkApp 帐户本身，也可用于访问任何其他帐户。帐户更新是一种灵活而强大的数据结构，可以表达您用于开发智能合约的各种更新、事件和先决条件。请参阅[教程 10：帐户更新](/zkapps/tutorials/account-updates)。
 
-To create an account update to find the same `account` and `network` fields:
+要创建帐户更新以查找相同的“account”和“network”字段：
 
 ```ts
 let accountUpdate = AccountUpdate.create(address);
@@ -193,9 +193,9 @@ accountUpdate.account.isNew.assertEquals(Bool(true));
 accountUpdate.account.permissions.set(permissions);
 ```
 
-When setting fields on an account update, you must ensure that this _same_ account update has the correct authorization to perform those actions.
+在设置帐户更新字段时，您必须确保此_相同_帐户更新具有执行这些操作的正确授权。
 
-For example, to initially set the verification key, the update requires a signature from the account owner:
+例如，要最初设置验证密钥，更新需要帐户所有者的签名：
 
 ```ts
 // use createSigned to require a signature

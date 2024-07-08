@@ -17,32 +17,32 @@ keywords:
 
 :::experimental
 
-Offchain storage is currently an experimental feature and is subject to change in the future.
+链下存储目前是一个实验性功能，将来可能会发生变化。
 
 :::
 
 # Offchain Storage
 
-One of Mina's unique features is its succinctness, both in computation and storage. To prevent state bloat and maintain Mina's efficiency and verifiability, we use offchain storage solutions for handling large volumes of data.
+Mina 的独特功能之一是其简洁性，无论是在计算还是存储方面。为了防止状态膨胀并保持 Mina 的效率和可验证性，我们使用链下存储解决方案来处理大量数据。
 
-In a previous section, we introduced the concept of on-chain Values. Since Mina currently only supports a total of 8 on-chain Field elements, we need to leverage offchain storage to extend that capacity.
-This approach maintains a provably secure connection between the on-chain smart contract and the off-chain data, such as that stored in an archive node.
+在上一节中，我们介绍了链上值的概念。由于 Mina 目前仅支持总共 8 个链上字段元素，因此我们需要利用链下存储来扩展该容量。
+这种方法在链上智能合约和链下数据（例如存储在存档节点中的数据）之间保持了可证明的安全连接。
 
 ## Design
 
-Presently, Offchain storage offers support for two types of state: `OffchainState.Field`, representing a single field of state, and `OffchainState.Map`, akin to the key-value maps found in JavaScript, like `let myMap = new Map<string, number>();`.
+目前，链下存储支持两种类型的状态：`OffchainState.Field`，表示单个状态字段，以及`OffchainState.Map`，类似于 JavaScript 中的键值映射，如`let myMap = new Map<string, number>();`。
 
-All offchain state resides within a single Merkle Map, which is essentially a wrapper around a [Merkle Tree](/zkapps/o1js/merkle-tree.mdx). Practically speaking, there are no constraints on the number of state fields and maps that a developer can store in a smart contract using Offchain storage.
+所有链下状态都位于单个 Merkle Map 中，该 Map 本质上是 [Merkle Tree](/zkapps/o1js/merkle-tree.mdx) 的包装器。实际上，开发人员使用链下存储在智能合约中的状态字段和映射的数量没有限制。
 
-Under this framework, [Actions and Reducer](/zkapps/writing-a-zkapp/feature-overview/actions-and-reducer.mdx) are utilized to manage state changes, with actions dispatching state updates and reducers settling them. Additionally, a Merkle Tree is employed to maintain a provably secure commitment to the data, with the root stored on-chain.
+在此框架下，[Actions 和 Reducer](/zkapps/writing-a-zkapp/feature-overview/actions-and-reducer.mdx) 用于管理状态更改，其中操作分派状态更新，而 Reducer 则解决这些更新。此外，还使用 ​​Merkle Tree 来维护对数据的可证明安全承诺，其根存储在链上。
 
-Prior to users accessing published state, it must first undergo settlement. Thanks to the design of Offchain storage, all state is recoverable from actions alone, eliminating the need for additional events or external data storage.
+在用户访问已发布状态之前，必须先进行结算。得益于 Offchain 存储的设计，所有状态都可以通过操作单独恢复，无需额外事件或外部数据存储。
 
 ## Utilizing Offchain Storage
 
 ### Prerequisites
 
-The `OffchainState` API is accessible within the `Experimental` namespace. To use `OffchainState`, import `Experimental` from o1js version 1.2.0 or higher.
+`OffchainState` API 可在 `Experimental` 命名空间内访问。要使用 `OffchainState`，请从 o1js 1.2.0 或更高版本导入 `Experimental`。
 
 ```ts
 import { Experimental } from 'o1js';
@@ -52,9 +52,9 @@ const { OffchainState, OffchainStateCommitments } = Experimental;
 
 ### Setting up Offchain Storage
 
-To integrate Offchain storage, developers must initially define an Offchain state configuration and a state proof type, then prepare the smart contract. The `OffchainState` configuration allows specification of the desired Offchain state type, including key-value pairs in a map and any additional required state.
+要集成 Offchain 存储，开发人员必须首先定义 Offchain 状态配置和状态证明类型，然后准备智能合约。`OffchainState` 配置允许指定所需的 Offchain 状态类型，包括映射中的键值对和任何其他所需的状态。
 
-The `StateProof` type will subsequently be used to finalize published state changes using a recursive reducer.
+随后将使用 `StateProof` 类型通过递归 Reducer 完成已发布的状态更改。
 
 ```ts
 const offchainState = OffchainState({
@@ -65,8 +65,8 @@ const offchainState = OffchainState({
 class StateProof extends offchainState.Proof {}
 ```
 
-Developers also need to set the smart contract instance and assign it to the offchain storage.
-This also compiles the recursive Offchain zkProgram in the background and assigns the Offchain state to a smart contract instance.
+开发人员还需要设置智能合约实例并将其分配给链下存储。
+这也会在后台编译递归的链下 zkProgram，并将链下状态分配给智能合约实例。
 
 ```ts
 let contract = new MyContract(contractAddress);
@@ -78,8 +78,8 @@ await offchainState.compile();
 await ExampleContract.compile();
 ```
 
-To settle the offchain state, an Offchain storage proof must be generated and provided to the smart contract's `settle()` method. This method automatically retrieves all pending actions (state changes) and resolves them using a recursive reducer.
-Finally, the proof is passed to the `settle()` method.
+要解决链下状态，必须生成链下存储证明并将其提供给智能合约的 `settle()` 方法。此方法会自动检索所有待处理操作（状态更改）并使用递归化简器解决它们。
+最后，将证明传递给 `settle()` 方法。
 
 ```ts
 let proof = await offchainState.createSettlementProof();
@@ -95,7 +95,7 @@ await Mina.transaction(sender, () => {
 
 ### Configuring Your Smart Contract
 
-The smart contract requires a field containing a commitment to the offchain state. This field is used internally by the `OffchainState` methods and should not be written to by your smart contract logic.
+智能合约需要一个包含对链下状态承诺的字段。此字段由“OffchainState”方法内部使用，不应由您的智能合约逻辑写入。
 
 ```ts
 class MyContract extends SmartContract {
@@ -105,7 +105,7 @@ class MyContract extends SmartContract {
 }
 ```
 
-The contract also need a `settle()` method to resolve all pending state updates. This method verifies a recursive proof to finalize all pending state changes, with the proof being generated before invoking the `settle()` method.
+合约还需要一个“settle()”方法来解析所有待处理的状态更新。此方法验证递归证明以完成所有待处理的状态更改，并在调用“settle()”方法之前生成证明。
 
 ```ts
 class MyContract extends SmartContract {
@@ -119,13 +119,13 @@ class MyContract extends SmartContract {
 
 :::note
 
-State is only available after it was settled via `settle()`!
+状态仅通过 `settle()` 解决后才可用！
 
 :::
 
 ### Utilizing Offchain Storage
 
-Now developers can utilize Offchain storage in any of their smart contract methods, as demonstrated below:
+现在开发人员可以在任何智能合约方法中使用 Offchain 存储，如下所示：
 
 ```ts
 class MyContract extends SmartContract {
@@ -160,11 +160,11 @@ class MyContract extends SmartContract {
 }
 ```
 
-Currently, Offchain states of type Field support `field.get()` and `field.overwrite(newValue)`, while maps support `map.get(key)` and `map.overwrite(key, newValue)`.
-The `.overwrite()` method sets the value without taking into account the previous value. If the value is modified by multiple zkkApps concurrently, interactions that were applied earlier will simply be overwritten!
+目前，Field 类型的 Offchain 状态支持 `field.get()` 和 `field.overwrite(newValue)`，而映射支持 `map.get(key)` 和 `map.overwrite(key, newValue)`。
+`.overwrite()` 方法设置值时不考虑先前的值。如果多个 zkkApp 同时修改该值，则先前应用的交互将被覆盖！
 
-All Offchain storage types also provide an `.update()` method which is a safe version of `.overwrite()`.
-The `.update()` method lets you define a precondition on the state that you want to update. If the precondition of the previous value does not match, the update will not be applied:
+所有 Offchain 存储类型还提供 `.update()` 方法，它是 `.overwrite()` 的安全版本。
+`.update()` 方法允许您在要更新的状态上定义先决条件。如果先前值的先决条件不匹配，则不会应用更新：
 
 ```ts
 field.update(config: {
@@ -175,14 +175,14 @@ field.update(config: {
 });
 ```
 
-Note that the precondition is an `Option` type: setting it to `None` means that you require the field to not exist, while `Some(value)` requires that it exists and contains the `value`. The return value of `get()` is an `Option` with the same semantics, and can be passed to `update()` directly.
+请注意，前提条件是 `Option` 类型：将其设置为 `None` 意味着您需要该字段不存在，而 `Some(value)` 则要求该字段存在并包含 `value`。`get()` 的返回值是具有相同语义的 `Option`，可以直接传递给 `update()`。
 
-Important: When `update()` fails due a mismatching precondition, _none_ of the state updates made in the same method call will be applied. This lets you safely write logic where multiple fields are linked and have to be updated in a consistent way, like in the example above where the total score has to be the sum of all player's scores.
+重要提示：当 `update()` 由于前提条件不匹配而失败时，将不会应用在同一方法调用中进行的任何状态更新。这样您就可以安全地编写逻辑，其中多个字段相互关联并且必须以一致的方式进行更新，例如在上面的示例中，总分必须是所有玩家得分的总和。
 
 ## Additional Resources
 
-This feature remains experimental, indicating that it is currently under active development. For further insight into its implementation, please refer to the following pull requests and examples on GitHub:
+此功能仍处于实验阶段，表明目前正在积极开发中。如需进一步了解其实现，请参阅 GitHub 上的以下拉取请求和示例：
 
-- [Experimental Offchain Storage part 1](https://github.com/o1-labs/o1js/pull/1630)
-- [Experimental Offchain Storage part 2](https://github.com/o1-labs/o1js/pull/1652)
-- [An end-to-end example utilizing Offchain storage](https://github.com/o1-labs/o1js/blob/main/src/lib/mina/actions/offchain-contract.unit-test.ts)
+- [实验性链下存储第 1 部分](https://github.com/o1-labs/o1js/pull/1630)
+- [实验性链下存储第 2 部分](https://github.com/o1-labs/o1js/pull/1652)
+- [利用链下存储的端到端示例](https://github.com/o1-labs/o1js/blob/main/src/lib/mina/actions/offchain-contract.unit-test.ts)
